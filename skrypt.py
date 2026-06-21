@@ -1,24 +1,27 @@
 import numpy as np
 
-vector1 = np.random.rand(10)
-vector2 = np.random.rand(10)
+# Flags
+features = 100
 
-dot = np.dot(vector1, vector2)
-outer = np.outer(vector1, vector2)
+# Parameters
+alpha = 0.8
 
-np.set_printoptions(precision=2)
+# Category A prototype
+category_A = np.random.rand(features)
 
-print(outer)
+# Items from category A
+items_A = []
 
-retrieved = outer @ vector2
-
-np.set_printoptions(precision=2)
-print(retrieved)
-print(vector1)
-
-retrieved = (outer @ vector2) / np.dot(vector2, vector2)
+for i in range(5):
+    random_vector = np.random.rand(features)
+    item = alpha * category_A + (1-alpha) * random_vector
+    items_A.append(item)
 
 
-print(retrieved)
+# Checking similarites between the items and the category prototype
 
-print(np.allclose(retrieved, vector1))
+for i in range(5):
+    item = items_A[i]
+    sim = np.dot(category_A, item) / (np.linalg.norm(category_A) * np.linalg.norm(item))
+    dist = np.linalg.norm(category_A - item)
+    print(f"item A{i+1}: cosine={sim:.2f}, distance={dist:.2f}")
