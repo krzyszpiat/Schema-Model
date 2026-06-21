@@ -1,18 +1,19 @@
 import numpy as np
 
-# Flags
+# Config
 features = 100
+n_items = 5
 
 # Parameters
 alpha = 0.8
 
-# Category A prototype
+# Creating category A prototype
 category_A = np.random.rand(features)
 
-# Items from category A
+# Creating items from category A
 items_A = []
 
-for i in range(5):
+for i in range(n_items):
     random_vector = np.random.rand(features)
     item = alpha * category_A + (1-alpha) * random_vector
     items_A.append(item)
@@ -20,7 +21,7 @@ for i in range(5):
 
 # Checking similarites between the items and the category prototype
 
-for i in range(5):
+for i in range(n_items):
     item = items_A[i]
     sim = np.dot(category_A, item) / (np.linalg.norm(category_A) * np.linalg.norm(item))
     dist = np.linalg.norm(category_A - item)
