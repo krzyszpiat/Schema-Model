@@ -1,5 +1,7 @@
 import numpy as np
 
+from utils import cosim
+
 # Config
 features = 100
 n_items = 5
@@ -26,3 +28,31 @@ for i in range(n_items):
     sim = np.dot(category_A, item) / (np.linalg.norm(category_A) * np.linalg.norm(item))
     dist = np.linalg.norm(category_A - item)
     print(f"item A{i+1}: cosine={sim:.2f}, distance={dist:.2f}")
+
+# Serial positions
+
+pos1 = np.random.rand(features)
+pos2 = np.random.rand(features)
+pos3 = np.random.rand(features)
+
+
+# Learning Phase
+m = []
+m = np.outer(pos1, items_A[0])
+m = m + np.outer(pos2, items_A[1])
+m = m + np.outer(pos3, items_A[2])
+
+
+# Retrieval Phase
+output1 = np.dot(pos1,m)
+output2 = np.dot(pos2,m)
+output3 = np.dot(pos3,m) 
+
+# Redintegration
+
+# Cosine similarity of output1 and item1
+for i in range(3):
+    print(f"pos1 & item{i} cosine similarity = cos({cosim(output1,items_A[i])})")
+
+from utils import cosim
+cosim(output1, items_A[0])
