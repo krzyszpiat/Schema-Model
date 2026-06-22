@@ -4,10 +4,15 @@ from utils import cosim
 
 # Config
 features = 100
-n_items = 5
+n_items = 4
 
 # Parameters
 alpha = 0.8
+
+
+#######################
+# Categories & Items
+#######################
 
 # Creating category A prototype
 category_A = np.random.rand(features)
@@ -82,4 +87,4 @@ for o in range(n_items):
 # Printing cosine similarities
 for o in range(n_items):
     for i in range(n_items):
-        print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items_A[i])})")    
+        print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items_A[i])})")
