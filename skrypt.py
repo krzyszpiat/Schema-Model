@@ -22,37 +22,63 @@ for i in range(n_items):
 
 
 # Checking similarites between the items and the category prototype
-
 for i in range(n_items):
     item = items_A[i]
-    sim = np.dot(category_A, item) / (np.linalg.norm(category_A) * np.linalg.norm(item))
+    sim = cosim(category_A, item)
     dist = np.linalg.norm(category_A - item)
     print(f"item A{i+1}: cosine={sim:.2f}, distance={dist:.2f}")
 
+##################
 # Serial positions
+##################
+positions = []
 
-pos1 = np.random.rand(features)
-pos2 = np.random.rand(features)
-pos3 = np.random.rand(features)
+# Creating random vectors for serial positions
+for p in range(n_items):
+    random_vector = np.random.rand(features)
+    positions.append(random_vector)
 
+# Making the position vectors orthogonal
+pos_matrix = np.column_stack(positions)
 
+Q, R = np.linalg.qr(pos_matrix) # QR decomposition 
+
+positions = []
+
+for p in range(n_items):
+    position = Q[:,p]
+    positions.append(position)
+
+#################
 # Learning Phase
-m = []
-m = np.outer(pos1, items_A[0])
-m = m + np.outer(pos2, items_A[1])
-m = m + np.outer(pos3, items_A[2])
+#################
+
+# initializing the weight matrix
+m = np.zeros((features, features))
+
+# Hebbian learning
+for i in range(n_items):
+    m = m + np.outer(positions[i], items_A[i])
 
 
+##################
 # Retrieval Phase
-output1 = np.dot(pos1,m)
-output2 = np.dot(pos2,m)
-output3 = np.dot(pos3,m) 
+##################
+output1 = np.dot(positions[0],m)
+output2 = np.dot(positions[1],m)
+output3 = np.dot(positions[2],m) 
 
+###################
 # Redintegration
 
-# Cosine similarity of output1 and item1
+# Cosine similarity of output1 and items
 for i in range(3):
-    print(f"pos1 & item{i} cosine similarity = cos({cosim(output1,items_A[i])})")
+    print(f"Output 1 & item {i} cosine similarity = cos({cosim(output1,items_A[i])})")
 
-from utils import cosim
-cosim(output1, items_A[0])
+# Cosine similarity of output2 and items
+for i in range(3):
+    print(f"Output 2 & item {i} cosine similarity = cos({cosim(output2,items_A[i])})")
+
+# Cosine similarity of output3 and items
+for i in range(3):
+    print(f"Output 3 & item {i} cosine similarity = cos({cosim(output3,items_A[i])})")
