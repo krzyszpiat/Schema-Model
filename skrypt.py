@@ -8,7 +8,9 @@ cat_scope = -1
 
 # CONFIG
 features = 100
-n_items = 4
+n_categories = 4
+n_items = n_categories
+
 
 # PARAMETERS
 alpha = 0.8
@@ -21,7 +23,7 @@ alpha = 0.8
 categories = []
 
 # Creating random vectors for categories
-for p in range(n_items):
+for p in range(n_categories):
 
     if cat_scope == 1:
         random_vector = np.random.rand(features)
@@ -46,6 +48,20 @@ catrel_check = cat_norms @ cat_norms.T
 # Printing correlation matrix of category prototypes
 print(np.round(catrel_check, 2))
 
+
+# Creating items for each category
+items = []
+
+for c in range(n_categories):
+    cat = categories[c]
+    cat_items = []
+
+    for i in range(n_items):
+        random_vector = np.random.rand(features)
+        item = alpha * cat + (1-alpha) * random_vector
+        cat_items.append(item)
+
+    items.append(cat_items)
 
 
 
