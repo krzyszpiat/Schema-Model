@@ -49,6 +49,10 @@ for p in range(n_items):
     position = Q[:,p]
     positions.append(position)
 
+# checking orthogonality of the first two positions
+np.dot(positions[0], positions[1])
+
+
 #################
 # Learning Phase
 #################
@@ -64,21 +68,18 @@ for i in range(n_items):
 ##################
 # Retrieval Phase
 ##################
-output1 = np.dot(positions[0],m)
-output2 = np.dot(positions[1],m)
-output3 = np.dot(positions[2],m) 
+outputs = []
+
+for o in range(n_items):
+    output = np.dot(positions[o],m)
+    outputs.append(output)
+
 
 ###################
 # Redintegration
+###################
 
-# Cosine similarity of output1 and items
-for i in range(3):
-    print(f"Output 1 & item {i} cosine similarity = cos({cosim(output1,items_A[i])})")
-
-# Cosine similarity of output2 and items
-for i in range(3):
-    print(f"Output 2 & item {i} cosine similarity = cos({cosim(output2,items_A[i])})")
-
-# Cosine similarity of output3 and items
-for i in range(3):
-    print(f"Output 3 & item {i} cosine similarity = cos({cosim(output3,items_A[i])})")
+# Printing cosine similarities
+for o in range(n_items):
+    for i in range(n_items):
+        print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items_A[i])})")    
