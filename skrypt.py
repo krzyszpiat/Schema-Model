@@ -2,11 +2,15 @@ import numpy as np
 
 from utils import cosim
 
-# Config
+# FLAGS
+# Scope of category vectors (1 = (0:1), -1 = (-1:1))
+cat_scope = -1
+
+# CONFIG
 features = 100
 n_items = 4
 
-# Parameters
+# PARAMETERS
 alpha = 0.8
 
 
@@ -14,8 +18,39 @@ alpha = 0.8
 # Categories & Items
 #######################
 
-# Creating category A prototype
-category_A = np.random.rand(features)
+categories = []
+
+# Creating random vectors for categories
+for p in range(n_items):
+
+    if cat_scope == 1:
+        random_vector = np.random.rand(features)
+    elif cat_scope == -1:
+        random_vector = np.random.randn(features)
+
+    categories.append(random_vector)
+
+
+# Checking similarities between categories
+catrel_matrix = np.vstack(categories)
+cat_norms_list = []
+
+for c in categories:
+    norm = np.linalg.norm(c)
+    unit_vector = c / norm
+    cat_norms_list.append(unit_vector)
+cat_norms = np.array(cat_norms_list)
+
+catrel_check = cat_norms @ cat_norms.T
+
+# Printing correlation matrix of category prototypes
+print(np.round(catrel_check, 2))
+
+
+
+
+# Creating Items from category A
+category_A = categories[0]
 
 # Creating items from category A
 items_A = []
