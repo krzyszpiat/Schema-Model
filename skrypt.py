@@ -10,7 +10,7 @@ cat_scope = -1
 features = 100
 
 n_targets = 4 # number of targets per trial
-n_cycles = 1 # number of learning cycles
+n_cycles = 2 # number of learning cycles
 n_fillers = 2 # number of filler trials per cycle
 
 
@@ -101,21 +101,44 @@ np.dot(positions[0], positions[1])
 #             EXPERIMENT SIMULATION
 #
 ################################################
-# nie działa przy więcej niż jednym cyklu
+# doesn't work beyond the first cycle
+# does not randomize the filler trials
 
+
+# setting an order of trials within a block
+cycle_str = ["F"] * n_fillers + ["H"]
+exp_str = cycle_str * n_cycles
 
 for t in range(n_trials):
+    
+    # starting a new cycle after each Hebb list
+    cycle_index = (t // (n_fillers + 1)) + 1
+    
+    # setting the list type for the current trial
+    trial_type = exp_str[t]
+
+    # selecting categories for the current trial
+    trial_pos = t % (n_fillers + 1)
+    selection_start = trial_pos * n_targets
+    selection = list(range(selection_start, selection_start + n_targets))
+
+    # setting up the order of categories for the current trial
+    if trial_type == "F":
+        cat_seq = np.random.permutation(selection)
+    elif trial_type == "H":
+        cat_seq = selection
+
 
 #################
 # Learning Phase
-#################
+################# 
 
     # initializing the weight matrix
     m = np.zeros((features, features))
 
     # Hebbian learning
     for i in range(n_targets):
-        cur_cat = (t * n_targets) + i
+        cur_cat = cat_seq[i]
         cur_item = items[cur_cat][0] # hardcoded to first item of each category
         m = m + np.outer(positions[i], cur_item)
 
