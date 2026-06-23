@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from utils import cosim
 
@@ -101,8 +102,6 @@ np.dot(positions[0], positions[1])
 #             EXPERIMENT SIMULATION
 #
 ################################################
-# doesn't work beyond the first cycle
-# does not randomize the filler trials
 
 
 # setting an order of trials within a block
@@ -139,7 +138,8 @@ for t in range(n_trials):
     # Hebbian learning
     for i in range(n_targets):
         cur_cat = cat_seq[i]
-        cur_item = items[cur_cat][0] # hardcoded to first item of each category
+        cur_item = items[cur_cat][cycle_index - 1]
+         # the line above can be hardcoded to cur_item = items[cur_cat][0] and simulate standard Hebb
         m = m + np.outer(positions[i], cur_item)
 
 ##################
@@ -156,10 +156,24 @@ for t in range(n_trials):
 ###################
 # Redintegration
 ###################
-    print(f"\nTrial {t + 1}:")
 
-    # Printing cosine similarities
+    print()
+    print(f"================ Trial {t + 1} ================")
+    print()
+
+    sim_matrix = []
+
     for o in range(n_targets):
+        row = []
         for i in range(n_targets):
-            cur_cat = (t * n_targets) + i
-            print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items[cur_cat][0])})")
+            cur_cat = cat_seq[i]
+            row.append(cosim(outputs[o], items[cur_cat][cycle_index - 1]))
+        sim_matrix.append(row)
+
+    df = pd.DataFrame(
+        sim_matrix,
+        index=[f"Output {i+1}" for i in range(n_targets)],
+        columns=[f"Item {i+1}" for i in range(n_targets)]
+    )
+
+    print(df.round(3))
