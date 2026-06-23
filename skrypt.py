@@ -64,36 +64,6 @@ for c in range(n_categories):
     items.append(cat_items)
 
 
-######################## RESUME HERE ############################
-# - check the relatedness between the items and their categorical prototypes
-# - check the relatedness of the items from different categories
-# - add the new items to the learning phase & the redintegration phase
-
-
-
-
-
-
-
-# # Creating Items from category A
-# category_A = categories[0]
-
-# # Creating items from category A
-# items_A = []
-
-# for i in range(n_items):
-#     random_vector = np.random.rand(features)
-#     item = alpha * category_A + (1-alpha) * random_vector
-#     items_A.append(item)
-
-
-# # Checking similarites between the items and the category prototype
-# for i in range(n_items):
-#     item = items_A[i]
-#     sim = cosim(category_A, item)
-#     dist = np.linalg.norm(category_A - item)
-#     print(f"item A{i+1}: cosine={sim:.2f}, distance={dist:.2f}")
-
 ##################
 # Serial positions
 ##################
@@ -128,7 +98,8 @@ m = np.zeros((features, features))
 
 # Hebbian learning
 for i in range(n_items):
-    m = m + np.outer(positions[i], items_A[i])
+    cur_item = items[i][i] # selecting all the items from different categories
+    m = m + np.outer(positions[i], cur_item)
 
 
 ##################
@@ -148,4 +119,4 @@ for o in range(n_items):
 # Printing cosine similarities
 for o in range(n_items):
     for i in range(n_items):
-        print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items_A[i])})")
+        print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items[i][i])})")
