@@ -10,12 +10,13 @@ cat_scope = -1
 features = 100
 
 n_targets = 4 # number of targets per trial
-n_cycles = 3 # number of learning cycles
+n_cycles = 1 # number of learning cycles
 n_fillers = 2 # number of filler trials per cycle
 
 
 n_categories = n_targets * (1 + n_fillers) # number of categories used in experiment
 n_items = n_cycles #number of items per category
+n_trials = n_cycles * (1 + n_fillers)
 
 
 # PARAMETERS
@@ -95,36 +96,47 @@ for p in range(n_targets):
 np.dot(positions[0], positions[1])
 
 
+#################################################
+#
+#             EXPERIMENT SIMULATION
+#
+################################################
+# nie działa przy więcej niż jednym cyklu
+
+
+for t in range(n_trials):
+
 #################
 # Learning Phase
 #################
-# (SINGLE TRIAL FOR NOW)
 
+    # initializing the weight matrix
+    m = np.zeros((features, features))
 
-# initializing the weight matrix
-m = np.zeros((features, features))
-
-# Hebbian learning
-for i in range(n_targets):
-    cur_item = items[i][0]
-    m = m + np.outer(positions[i], cur_item)
-
+    # Hebbian learning
+    for i in range(n_targets):
+        cur_cat = (t * n_targets) + i
+        cur_item = items[cur_cat][0] # hardcoded to first item of each category
+        m = m + np.outer(positions[i], cur_item)
 
 ##################
 # Retrieval Phase
 ##################
-outputs = []
 
-for o in range(n_targets):
-    output = np.dot(positions[o],m)
-    outputs.append(output)
+    outputs = []
+
+    for o in range(n_targets):
+        output = np.dot(positions[o],m)
+        outputs.append(output)
 
 
 ###################
 # Redintegration
 ###################
+    print(f"\nTrial {t + 1}:")
 
-# Printing cosine similarities
-for o in range(n_targets):
-    for i in range(n_targets):
-        print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items[i][0])})")
+    # Printing cosine similarities
+    for o in range(n_targets):
+        for i in range(n_targets):
+            cur_cat = (t * n_targets) + i
+            print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items[cur_cat][0])})")
