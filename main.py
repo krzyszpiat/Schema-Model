@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from utils import cosim
+from HebbTask import HebbParadigm
 
 # FLAGS
 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
@@ -97,83 +99,33 @@ for p in range(n_targets):
 np.dot(positions[0], positions[1])
 
 
-#################################################
-#
-#             EXPERIMENT SIMULATION
-#
-################################################
+########################
+# EXPERIMENT SIMULATION
+########################
 
-
-# setting an order of trials within a block
-cycle_str = ["F"] * n_fillers + ["H"]
-exp_str = cycle_str * n_cycles
-
-for t in range(n_trials):
-    
-    # starting a new cycle after each Hebb list
-    cycle_index = (t // (n_fillers + 1)) + 1
-    
-    # setting the list type for the current trial
-    trial_type = exp_str[t]
-
-    # selecting categories for the current trial
-    trial_pos = t % (n_fillers + 1)
-    selection_start = trial_pos * n_targets
-    selection = list(range(selection_start, selection_start + n_targets))
-
-    # setting up the order of categories for the current trial
-    if trial_type == "F":
-        cat_seq = np.random.permutation(selection)
-    elif trial_type == "H":
-        cat_seq = selection
-
-
-#################
-# Learning Phase
-################# 
-
-    # initializing the weight matrix
-    m = np.zeros((features, features))
-
-    # Hebbian learning
-    for i in range(n_targets):
-        cur_cat = cat_seq[i]
-        cur_item = items[cur_cat][cycle_index - 1]
-         # the line above can be hardcoded to cur_item = items[cur_cat][0] and simulate standard Hebb
-        m = m + np.outer(positions[i], cur_item)
-
-##################
-# Retrieval Phase
-##################
-
-    outputs = []
-
-    for o in range(n_targets):
-        output = np.dot(positions[o],m)
-        outputs.append(output)
-
+results = HebbParadigm(items, positions, categories, n_targets, n_cycles, n_fillers, n_trials, features)
 
 ###################
-# Redintegration
+# Results
 ###################
 
-    print()
-    print(f"================ Trial {t + 1} ================")
-    print()
+results_df = pd.DataFrame(results)
+print(results_df)
 
-    sim_matrix = []
 
-    for o in range(n_targets):
-        row = []
-        for i in range(n_targets):
-            cur_cat = cat_seq[i]
-            row.append(cosim(outputs[o], items[cur_cat][cycle_index - 1]))
-        sim_matrix.append(row)
+hebb_acc = results_df[results_df['type'] == 'Hebb List'].groupby('cycle')['accuracy'].mean()
+filler_acc = results_df[results_df['type'] == 'Filler List'].groupby('cycle')['accuracy'].mean()
 
-    df = pd.DataFrame(
-        sim_matrix,
-        index=[f"Output {i+1}" for i in range(n_targets)],
-        columns=[f"Item {i+1}" for i in range(n_targets)]
-    )
 
-    print(df.round(3))
+
+
+plt.plot(hebb_acc.index, hebb_acc.values, label='Hebb List', marker='o')
+plt.plot(filler_acc.index, filler_acc.values, label='Filler List', marker='o')
+
+plt.xlabel('Cycle')
+plt.ylabel('Accuracy')
+plt.ylim(0, 1)
+plt.xticks(range(1, n_cycles + 1))
+plt.legend()
+plt.title('Hebb Repetition Effect')
+plt.show()

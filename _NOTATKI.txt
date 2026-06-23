@@ -1,0 +1,13 @@
+NOTATKI
+
+- W tym momencie zeruję weight matrix na początku bloku. 
+    - Można też resetować na początku każdego trialu, wtedy każda lista ma swoje własne pozycje seryjne
+        - Można wtedy rozważyć mechanizm wydobywania macierzy przy udziale awareness
+    - Można zaimplementować mechanizm decay w połączeniach
+
+- Uszczegółowić mechanizm wyboru itemów do retrieval set
+
+
+TO DO:
+- Zaimplementować mechanizm usuwania odpamiętanych itemów z retrieval set
+- Pętla wokół generowania stimuli + symulacji eksperymentu

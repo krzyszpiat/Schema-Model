@@ -1,7 +1,0 @@
-NOTATKI
-
-- W tym momencie zeruję weight matrix na początku trialu. 
-    - Można rozważyć mechanizm wydobywania macierzy przy udziale awareness
-    - Można zaimplementować mechanizm decay w połączeniach
-
-- Uszczegółowić mechanizm wyboru itemów do retrieval set
