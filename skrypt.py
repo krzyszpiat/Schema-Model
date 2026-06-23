@@ -10,8 +10,8 @@ cat_scope = -1
 # CONFIG
 features = 100
 
-n_targets = 4 # number of targets per trial
-n_cycles = 2 # number of learning cycles
+n_targets = 8 # number of targets per trial
+n_cycles = 10 # number of learning cycles
 n_fillers = 2 # number of filler trials per cycle
 
 
