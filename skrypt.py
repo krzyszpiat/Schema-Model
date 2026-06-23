@@ -8,9 +8,14 @@ cat_scope = -1
 
 # CONFIG
 features = 100
-n_categories = 4
-n_lists = 2
-n_items = n_categories #* n_lists
+
+n_targets = 4 # number of targets per trial
+n_cycles = 3 # number of learning cycles
+n_fillers = 2 # number of filler trials per cycle
+
+
+n_categories = n_targets * (1 + n_fillers) # number of categories used in experiment
+n_items = n_cycles #number of items per category
 
 
 # PARAMETERS
@@ -71,7 +76,7 @@ for c in range(n_categories):
 positions = []
 
 # Creating random vectors for serial positions
-for p in range(n_items):
+for p in range(n_targets):
     random_vector = np.random.rand(features)
     positions.append(random_vector)
 
@@ -82,7 +87,7 @@ Q, R = np.linalg.qr(pos_matrix) # QR decomposition
 
 positions = []
 
-for p in range(n_items):
+for p in range(n_targets):
     position = Q[:,p]
     positions.append(position)
 
@@ -93,13 +98,15 @@ np.dot(positions[0], positions[1])
 #################
 # Learning Phase
 #################
+# (SINGLE TRIAL FOR NOW)
+
 
 # initializing the weight matrix
 m = np.zeros((features, features))
 
 # Hebbian learning
-for i in range(n_items):
-    cur_item = items[i][i] # selecting all the items from different categories
+for i in range(n_targets):
+    cur_item = items[i][0]
     m = m + np.outer(positions[i], cur_item)
 
 
@@ -108,7 +115,7 @@ for i in range(n_items):
 ##################
 outputs = []
 
-for o in range(n_items):
+for o in range(n_targets):
     output = np.dot(positions[o],m)
     outputs.append(output)
 
@@ -118,6 +125,6 @@ for o in range(n_items):
 ###################
 
 # Printing cosine similarities
-for o in range(n_items):
-    for i in range(n_items):
-        print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items[i][i])})")
+for o in range(n_targets):
+    for i in range(n_targets):
+        print(f"Output {o + 1} & item {i + 1} cosine similarity = cos({cosim(outputs[o],items[i][0])})")
