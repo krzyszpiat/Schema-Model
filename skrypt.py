@@ -9,7 +9,8 @@ cat_scope = -1
 # CONFIG
 features = 100
 n_categories = 4
-n_items = n_categories
+n_lists = 2
+n_items = n_categories #* n_lists
 
 
 # PARAMETERS
