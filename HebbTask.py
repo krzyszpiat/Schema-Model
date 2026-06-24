@@ -1,7 +1,8 @@
 import numpy as np
+import pandas as pd
 from utils import cosim
 
-def HebbParadigm(items, positions, categories, n_targets, n_cycles, n_fillers, n_trials, features):
+def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features):
 
     # setting an order of trials within a block
     cycle_str = ["F"] * n_fillers + ["H"]
@@ -71,18 +72,25 @@ def HebbParadigm(items, positions, categories, n_targets, n_cycles, n_fillers, n
                 row.append(cosim(outputs[o], items[cur_cat][cycle_index - 1]))
             sim_matrix.append(row)
 
+        # sim_df = pd.DataFrame(
+        #     sim_matrix,
+        #     index=[f"Output {i+1}" for i in range(n_targets)],
+        #     columns=range(n_targets)
+        #      )        
+        
+        # accuracy = 0
+
+        # item = 0
+
+        # for item in range(n_targets):
+        #     recalled = sim_df.iloc[item].argmax()
+        #     if recalled == item: 
+        #         accuracy += 1
+        #     sim_df = sim_df.drop(recalled, axis = 1)
+
         accuracy = np.mean(np.argmax(sim_matrix, axis=1) == range(n_targets))
 
         results.append({'trial': t + 1, 'cycle': cycle_index, 'type': condition, 'accuracy': accuracy})
 
-
-        
-        # df = pd.DataFrame(
-        #     sim_matrix,
-        #     index=[f"Output {i+1}" for i in range(n_targets)],
-        #     columns=[f"Item {i+1}" for i in range(n_targets)]
-        # )
-    
     
     return(results)
-

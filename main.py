@@ -23,7 +23,7 @@ n_trials = n_cycles * (1 + n_fillers)
 
 
 # PARAMETERS
-alpha = 0.8
+alpha = 0.5
 
 
 #######################
@@ -52,11 +52,6 @@ for c in categories:
     unit_vector = c / norm
     cat_norms_list.append(unit_vector)
 cat_norms = np.array(cat_norms_list)
-
-catrel_check = cat_norms @ cat_norms.T
-
-# Printing correlation matrix of category prototypes
-print(np.round(catrel_check, 2))
 
 
 # Creating items for each category
@@ -95,28 +90,24 @@ for p in range(n_targets):
     position = Q[:,p]
     positions.append(position)
 
-# checking orthogonality of the first two positions
-np.dot(positions[0], positions[1])
-
 
 ########################
 # EXPERIMENT SIMULATION
 ########################
 
-results = HebbParadigm(items, positions, categories, n_targets, n_cycles, n_fillers, n_trials, features)
+results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features)
+
 
 ###################
 # Results
 ###################
 
 results_df = pd.DataFrame(results)
-print(results_df)
+
 
 
 hebb_acc = results_df[results_df['type'] == 'Hebb List'].groupby('cycle')['accuracy'].mean()
 filler_acc = results_df[results_df['type'] == 'Filler List'].groupby('cycle')['accuracy'].mean()
-
-
 
 
 plt.plot(hebb_acc.index, hebb_acc.values, label='Hebb List', marker='o')
@@ -128,4 +119,7 @@ plt.ylim(0, 1)
 plt.xticks(range(1, n_cycles + 1))
 plt.legend()
 plt.title('Hebb Repetition Effect')
+
+
+#print(results_df)
 plt.show()
