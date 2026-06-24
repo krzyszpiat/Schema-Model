@@ -10,7 +10,7 @@ from stimuliGeneration import itemGeneration
 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
 cat_scope = -1
 # print position curves? (1 = yes)
-crvs = 0 
+crvs = 1
 
 # CONFIG
 n_simulations = 100
@@ -28,7 +28,9 @@ n_trials = n_cycles * (1 + n_fillers)
 
 # PARAMETERS
 alpha = 0.35
-threshold = .8
+threshold = .8 # will need to be adjusted for the dot products
+decay_rate = 1
+decay_slope = .9
 
 
 ##################
@@ -70,7 +72,7 @@ for sim in range(n_simulations):
 # Hebb Task
 ############
 
-    results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold)
+    results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold, decay_rate, decay_slope)
 
     for r in results:
         r['simulation'] = sim + 1

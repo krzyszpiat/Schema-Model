@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from utils import cosim
 
-def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold):
+def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold, decay_rate, decay_slope):
 
     # setting an order of trials within a block
     cycle_str = ["F"] * n_fillers + ["H"]
@@ -39,12 +39,26 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
     # Learning Phase
     ################# 
 
+        encoded_associations = []
+
         # Hebbian learning
         for i in range(n_targets):
+            ### ENCODING ###
+            # selecting category to be presented
             cur_cat = cat_seq[i]
-            cur_item = items[(cur_cat, cycle_index)]
-            # the line above can be hardcoded to cur_item = items[(cur_cat,0)] and simulate standard Hebb
-            m = m + np.outer(positions[i], cur_item)
+            # selecting item from the current category
+            cur_item = items[(cur_cat, cycle_index)]# this line above can be hardcoded to cur_item = items[(cur_cat,0)] and simulate standard Hebb
+            # associating current item with the current serial position
+            outerProduct = np.outer(positions[i], cur_item)
+            encoded_associations.append(outerProduct)
+            m = m + outerProduct
+            ### DECAY ###
+            for d in range(i):
+                effective_rate = decay_rate * (decay_slope ** (i - d))
+                m = m - effective_rate * encoded_associations[d]
+            
+
+            
 
     ##################
     # Retrieval Phase
