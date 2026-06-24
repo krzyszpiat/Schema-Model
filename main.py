@@ -9,6 +9,8 @@ from stimuliGeneration import itemGeneration
 # FLAGS
 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
 cat_scope = -1
+# print position curves? (1 = yes)
+crvs = 0 
 
 # CONFIG
 n_simulations = 100
@@ -25,7 +27,8 @@ n_trials = n_cycles * (1 + n_fillers)
 
 
 # PARAMETERS
-alpha = 0.2
+alpha = 0.35
+threshold = .8
 
 
 ##################
@@ -67,7 +70,7 @@ for sim in range(n_simulations):
 # Hebb Task
 ############
 
-    results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features)
+    results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold)
 
     for r in results:
         r['simulation'] = sim + 1
@@ -104,27 +107,30 @@ plt.show()
 
 # Serial position curves
 
-targets_df = results_df['targets'].apply(pd.Series)
-responses_df = results_df['responses'].apply(pd.Series)
+if crvs == 1:
+    targets_df = results_df['targets'].apply(pd.Series)
+    responses_df = results_df['responses'].apply(pd.Series)
 
-position_accuracy = (targets_df == responses_df)
+    position_accuracy = (targets_df == responses_df)
 
-curves_df = pd.concat([results_df, position_accuracy], axis=1)
+    curves_df = pd.concat([results_df, position_accuracy], axis=1)
 
 
-Hebbs = curves_df[curves_df['type'] == 'Hebb List'][range(n_targets)].mean()
-Fillers = curves_df[curves_df['type'] == 'Filler List'][range(n_targets)].mean()
+    Hebbs = curves_df[curves_df['type'] == 'Hebb List'][range(n_targets)].mean()
+    Fillers = curves_df[curves_df['type'] == 'Filler List'][range(n_targets)].mean()
 
-plt.plot(range(1, n_targets+1), Hebbs[range(n_targets)].values, marker='o')
-plt.xlabel('Serial Position')
-plt.ylabel('Accuracy')
-plt.ylim(0, 1.05)
-plt.title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
-plt.show()
+    plt.plot(range(1, n_targets+1), Hebbs[range(n_targets)].values, marker='o')
+    plt.xlabel('Serial Position')
+    plt.ylabel('Accuracy')
+    plt.ylim(0, 1.05)
+    plt.title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
+    plt.show()
 
-plt.plot(range(1, n_targets+1), Fillers[range(n_targets)].values, marker='o', color = 'orange')
-plt.xlabel('Serial Position')
-plt.ylabel('Accuracy')
-plt.ylim(0, 1.05)
-plt.title(f'Filler Lists, serial position curve, {n_simulations} simulations')
-plt.show()
+
+
+    plt.plot(range(1, n_targets+1), Fillers[range(n_targets)].values, marker='o', color = 'orange')
+    plt.xlabel('Serial Position')
+    plt.ylabel('Accuracy')
+    plt.ylim(0, 1.05)
+    plt.title(f'Filler Lists, serial position curve, {n_simulations} simulations')
+    plt.show()

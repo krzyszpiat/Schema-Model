@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from utils import cosim
 
-def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features):
+def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold):
 
     # setting an order of trials within a block
     cycle_str = ["F"] * n_fillers + ["H"]
@@ -61,7 +61,7 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
     # Redintegration
     ###################
 
-        # Calculating accuracy
+        # Calculating input-output weight matrix
         
         recalled_items = []
         sim_matrix = []
@@ -78,16 +78,19 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
             index=[f"Output {i}" for i in cat_seq],
             columns=cat_seq)        
         
+        # Serial reconstruction
+
         accuracy = 0
 
-        # item = 0
-
         for item in range(n_targets):
-            recalled = sim_df.iloc[item].idxmax()
-            if recalled == cat_seq[item]: 
-                accuracy += 1
-            sim_df = sim_df.drop(recalled, axis = 1)
-            recalled_items.append(recalled)
+            if sim_df.iloc[item].max() > threshold:
+                recalled = sim_df.iloc[item].idxmax()
+                if recalled == cat_seq[item]: 
+                    accuracy += 1
+                sim_df = sim_df.drop(recalled, axis = 1)
+                recalled_items.append(recalled)
+            else:
+                recalled_items.append("blank")
 
         accuracy = accuracy/n_targets
 
