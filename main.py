@@ -2,14 +2,16 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from utils import cosim
 from HebbTask import HebbParadigm
+from stimuliGeneration import categoryGeneration
+from stimuliGeneration import itemGeneration
 
 # FLAGS
 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
 cat_scope = -1
 
 # CONFIG
+n_simulations = 100
 features = 100
 
 n_targets = 8 # number of targets per trial
@@ -24,51 +26,6 @@ n_trials = n_cycles * (1 + n_fillers)
 
 # PARAMETERS
 alpha = 0.5
-
-
-#######################
-# Categories & Items
-#######################
-
-categories = []
-
-# Creating random vectors for categories
-for p in range(n_categories):
-
-    if cat_scope == 1:
-        random_vector = np.random.rand(features)
-    elif cat_scope == -1:
-        random_vector = np.random.randn(features)
-
-    categories.append(random_vector)
-
-
-# Checking similarities between categories
-catrel_matrix = np.vstack(categories)
-cat_norms_list = []
-
-for c in categories:
-    norm = np.linalg.norm(c)
-    unit_vector = c / norm
-    cat_norms_list.append(unit_vector)
-cat_norms = np.array(cat_norms_list)
-
-
-# Creating items for each category
-items = {}
-
-for c in range(n_categories):
-    cat = categories[c]
-    cat_items = []
-
-    for i in range(n_items):
-        random_vector = np.random.rand(features)
-        item = alpha * cat + (1-alpha) * random_vector
-        items[(c,i)] = item
-
-for key, value in items.items():
-    print(key, np.array(value).shape)
-
 
 
 ##################
@@ -93,19 +50,36 @@ for p in range(n_targets):
     positions.append(position)
 
 
-########################
-# EXPERIMENT SIMULATION
-########################
+all_results = []
 
-results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features)
+for sim in range(n_simulations):
+
+#######################
+# Categories & Items
+#######################
+
+    categories = categoryGeneration(n_categories, features, cat_scope)
+
+    items = itemGeneration(n_categories, features, alpha, n_items, categories)
+
+
+############
+# Hebb Task
+############
+
+    results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features)
+
+    for r in results:
+        r['simulation'] = sim + 1
+
+    all_results.extend(results)
 
 
 ###################
 # Results
 ###################
 
-results_df = pd.DataFrame(results)
-
+results_df = pd.DataFrame(all_results)
 
 
 hebb_acc = results_df[results_df['type'] == 'Hebb List'].groupby('cycle')['accuracy'].mean()
@@ -120,7 +94,7 @@ plt.ylabel('Accuracy')
 plt.ylim(0, 1.05)
 plt.xticks(range(1, n_cycles + 1))
 plt.legend()
-plt.title('Hebb Repetition Effect')
+plt.title(f'Hebb Lists vs Filler lists, {n_simulations} simulations')
 
 
 print(results_df)
