@@ -25,7 +25,7 @@ n_trials = n_cycles * (1 + n_fillers)
 
 
 # PARAMETERS
-alpha = 0.5
+alpha = 0.2
 
 
 ##################
@@ -79,8 +79,9 @@ for sim in range(n_simulations):
 # Results
 ###################
 
-results_df = pd.DataFrame(all_results)
+# Hebb Repetition Effect
 
+results_df = pd.DataFrame(all_results)
 
 hebb_acc = results_df[results_df['type'] == 'Hebb List'].groupby('cycle')['accuracy'].mean()
 filler_acc = results_df[results_df['type'] == 'Filler List'].groupby('cycle')['accuracy'].mean()
@@ -98,4 +99,32 @@ plt.title(f'Hebb Lists vs Filler lists, {n_simulations} simulations')
 
 
 print(results_df)
+plt.show()
+
+
+# Serial position curves
+
+targets_df = results_df['targets'].apply(pd.Series)
+responses_df = results_df['responses'].apply(pd.Series)
+
+position_accuracy = (targets_df == responses_df)
+
+curves_df = pd.concat([results_df, position_accuracy], axis=1)
+
+
+Hebbs = curves_df[curves_df['type'] == 'Hebb List'][range(n_targets)].mean()
+Fillers = curves_df[curves_df['type'] == 'Filler List'][range(n_targets)].mean()
+
+plt.plot(range(1, n_targets+1), Hebbs[range(n_targets)].values, marker='o')
+plt.xlabel('Serial Position')
+plt.ylabel('Accuracy')
+plt.ylim(0, 1.05)
+plt.title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
+plt.show()
+
+plt.plot(range(1, n_targets+1), Fillers[range(n_targets)].values, marker='o', color = 'orange')
+plt.xlabel('Serial Position')
+plt.ylabel('Accuracy')
+plt.ylim(0, 1.05)
+plt.title(f'Filler Lists, serial position curve, {n_simulations} simulations')
 plt.show()
