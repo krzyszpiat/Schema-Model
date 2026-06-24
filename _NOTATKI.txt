@@ -6,8 +6,3 @@ NOTATKI
     - Można zaimplementować mechanizm decay w połączeniach
 
 - Uszczegółowić mechanizm wyboru itemów do retrieval set
-
-
-TO DO:
-- Zaimplementować mechanizm usuwania odpamiętanych itemów z retrieval set
-- Pętla wokół generowania stimuli + symulacji eksperymentu
