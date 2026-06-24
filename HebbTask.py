@@ -16,7 +16,7 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
     for t in range(n_trials):
         
         # starting a new cycle after each Hebb list
-        cycle_index = (t // (n_fillers + 1)) + 1
+        cycle_index = (t // (n_fillers + 1))
         
         # setting the list type for the current trial
         trial_type = exp_str[t]
@@ -42,8 +42,8 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
         # Hebbian learning
         for i in range(n_targets):
             cur_cat = cat_seq[i]
-            cur_item = items[cur_cat][cycle_index - 1]
-            # the line above can be hardcoded to cur_item = items[cur_cat][0] and simulate standard Hebb
+            cur_item = items[(cur_cat, cycle_index)]
+            # the line above can be hardcoded to cur_item = items[(cur_cat,0)] and simulate standard Hebb
             m = m + np.outer(positions[i], cur_item)
 
     ##################
@@ -63,34 +63,41 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
 
         # Calculating accuracy
         
+        recalled_items = []
         sim_matrix = []
 
         for o in range(n_targets):
             row = []
             for i in range(n_targets):
                 cur_cat = cat_seq[i]
-                row.append(cosim(outputs[o], items[cur_cat][cycle_index - 1]))
+                row.append(cosim(outputs[o], items[(cur_cat, cycle_index)]))
             sim_matrix.append(row)
 
-        # sim_df = pd.DataFrame(
-        #     sim_matrix,
-        #     index=[f"Output {i+1}" for i in range(n_targets)],
-        #     columns=range(n_targets)
-        #      )        
+        sim_df = pd.DataFrame(
+            sim_matrix,
+            index=[f"Output {i}" for i in cat_seq],
+            columns=cat_seq)        
         
-        # accuracy = 0
+        accuracy = 0
 
         # item = 0
 
-        # for item in range(n_targets):
-        #     recalled = sim_df.iloc[item].argmax()
-        #     if recalled == item: 
-        #         accuracy += 1
-        #     sim_df = sim_df.drop(recalled, axis = 1)
+        for item in range(n_targets):
+            recalled = sim_df.iloc[item].idxmax()
+            if recalled == cat_seq[item]: 
+                accuracy += 1
+            sim_df = sim_df.drop(recalled, axis = 1)
+            recalled_items.append(recalled)
 
-        accuracy = np.mean(np.argmax(sim_matrix, axis=1) == range(n_targets))
+        accuracy = accuracy/n_targets
 
-        results.append({'trial': t + 1, 'cycle': cycle_index, 'type': condition, 'accuracy': accuracy})
+        results.append({
+            'trial': t + 1, 
+            'cycle': cycle_index, 
+            'type': condition, 
+            'accuracy': accuracy,
+            'targets': cat_seq,
+            'responses': recalled_items})
 
     
     return(results)

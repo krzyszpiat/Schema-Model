@@ -55,7 +55,7 @@ cat_norms = np.array(cat_norms_list)
 
 
 # Creating items for each category
-items = []
+items = {}
 
 for c in range(n_categories):
     cat = categories[c]
@@ -64,9 +64,11 @@ for c in range(n_categories):
     for i in range(n_items):
         random_vector = np.random.rand(features)
         item = alpha * cat + (1-alpha) * random_vector
-        cat_items.append(item)
+        items[(c,i)] = item
 
-    items.append(cat_items)
+for key, value in items.items():
+    print(key, np.array(value).shape)
+
 
 
 ##################
@@ -115,11 +117,11 @@ plt.plot(filler_acc.index, filler_acc.values, label='Filler List', marker='o')
 
 plt.xlabel('Cycle')
 plt.ylabel('Accuracy')
-plt.ylim(0, 1)
+plt.ylim(0, 1.05)
 plt.xticks(range(1, n_cycles + 1))
 plt.legend()
 plt.title('Hebb Repetition Effect')
 
 
-#print(results_df)
+print(results_df)
 plt.show()
