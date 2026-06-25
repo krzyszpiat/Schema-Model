@@ -8,11 +8,11 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 ## Mechanisms implemented so far
 - Fully functional Hebb paradigm
 - Within-category similarity of the targets
-- Decay mechanism (still being tested)
+- *Decay mechanism (still being tested)*
 ## What the model does so far
 - Simulate benefit of the Hebb lists over Filler lists
   - Purely through superposition! No additional mechanisms required
-- Simulate recency effect
+- *Simulate recency effect (not sure if for correct reasons though)*
 ## What the model does poorly
 - No primacy effect
 - Performance in the filler lists go down instead of staying relatively constant
