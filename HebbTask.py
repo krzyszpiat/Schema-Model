@@ -2,7 +2,17 @@ import numpy as np
 import pandas as pd
 from utils import cosim
 
-def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold, decay_rate, decay_slope, measure):
+def HebbParadigm(cfg, items, positions):
+
+    n_targets = cfg['n_targets'] 
+    n_cycles = cfg['n_cycles']
+    n_fillers = cfg['n_fillers']
+    n_trials = cfg['n_trials']
+    features = cfg['features']
+    threshold = cfg['threshold']
+    decay_rate = cfg['decay_rate']
+    decay_slope = cfg['decay_slope']
+    measure = cfg['measure']
 
     # setting an order of trials within a block
     cycle_str = ["F"] * n_fillers + ["H"]

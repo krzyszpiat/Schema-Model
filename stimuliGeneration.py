@@ -1,6 +1,10 @@
 import numpy as np
 
-def categoryGeneration(n_categories, features, cat_scope):
+def categoryGeneration(cfg):
+    n_categories = cfg['n_categories']
+    features = cfg['features']
+    cat_scope = cfg['cat_scope']
+    
     categories = []
 
     # Creating random vectors for categories
@@ -15,18 +19,13 @@ def categoryGeneration(n_categories, features, cat_scope):
 
     return categories
 
+def itemGeneration(cfg, categories):
+    n_categories = cfg['n_categories']
+    features = cfg['features']
+    alpha = cfg['alpha']
+    n_items = cfg['n_items']
+    item_scope = cfg['item_scope']
 
-    # # Checking similarities between categories
-    # catrel_matrix = np.vstack(categories)
-    # cat_norms_list = []
-
-    # for c in categories:
-    #     norm = np.linalg.norm(c)
-    #     unit_vector = c / norm
-    #     cat_norms_list.append(unit_vector)
-    # cat_norms = np.array(cat_norms_list)
-
-def itemGeneration(n_categories, features, alpha, n_items, categories, item_scope):
 
     # Creating items for each category
     items = {}
