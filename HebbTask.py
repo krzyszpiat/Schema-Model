@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from utils import cosim
 
-def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold, decay_rate, decay_slope):
+def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold, decay_rate, decay_slope, measure):
 
     # setting an order of trials within a block
     cycle_str = ["F"] * n_fillers + ["H"]
@@ -54,7 +54,9 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
             m = m + outerProduct
             ### DECAY ###
             for d in range(i):
+                # Setting the decay rate for the current item to be decayed
                 effective_rate = decay_rate * (decay_slope ** (i - d))
+                # Anti-Hebbian learning
                 m = m - effective_rate * encoded_associations[d]
             
 
@@ -84,8 +86,14 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
             row = []
             for i in range(n_targets):
                 cur_cat = cat_seq[i]
-                row.append(cosim(outputs[o], items[(cur_cat, cycle_index)]))
+                if measure == "dot":
+                    row.append(np.dot(outputs[o], items[(cur_cat, cycle_index)]))
+                elif measure == "cosim":
+                    row.append(cosim(outputs[o], items[(cur_cat, cycle_index)]))
             sim_matrix.append(row)
+       
+      
+      
 
         sim_df = pd.DataFrame(
             sim_matrix,
@@ -117,4 +125,4 @@ def HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, fea
             'responses': recalled_items})
 
     
-    return(results)
+    return results

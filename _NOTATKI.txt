@@ -1,5 +1,8 @@
 NOTATKI
 
+HebbTask.py, line 87: zmienić similarity measure na dot product (?)
+
+
 - W tym momencie zeruję weight matrix na początku bloku. 
     - Można też resetować na początku każdego trialu, wtedy każda lista ma swoje własne pozycje seryjne
         - Można wtedy rozważyć mechanizm wydobywania macierzy przy udziale awareness

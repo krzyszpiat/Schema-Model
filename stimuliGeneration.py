@@ -26,7 +26,7 @@ def categoryGeneration(n_categories, features, cat_scope):
     #     cat_norms_list.append(unit_vector)
     # cat_norms = np.array(cat_norms_list)
 
-def itemGeneration(n_categories, features, alpha, n_items, categories):
+def itemGeneration(n_categories, features, alpha, n_items, categories, item_scope):
 
     # Creating items for each category
     items = {}
@@ -36,7 +36,10 @@ def itemGeneration(n_categories, features, alpha, n_items, categories):
         #cat_items = []
 
         for i in range(n_items):
-            random_vector = np.random.rand(features)
+            if item_scope == 1:
+                random_vector = np.random.rand(features)
+            elif item_scope == -1:
+                random_vector = np.random.randn(features)
             item = alpha * cat + (1-alpha) * random_vector
             items[(c,i)] = item
 

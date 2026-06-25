@@ -7,12 +7,20 @@ from stimuliGeneration import categoryGeneration
 from stimuliGeneration import itemGeneration
 
 # FLAGS
-# Scope of category vectors (1 = (0:1), -1 = (-1:1))
-cat_scope = -1
+# Collect diagnostics? (1 = yes)
+diag = 1 
+
 # print position curves? (1 = yes)
 crvs = 1
 
+# Wchich similarity measure?
+measure = "cosim"
+#measure = "dot"
+
 # CONFIG
+cat_scope = -1 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
+item_scope = 1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
+
 n_simulations = 100
 features = 100
 
@@ -27,10 +35,10 @@ n_trials = n_cycles * (1 + n_fillers)
 
 
 # PARAMETERS
-alpha = 0.35
+alpha = 0.3
 threshold = .8 # will need to be adjusted for the dot products
-decay_rate = 1
-decay_slope = .9
+decay_rate = .7 # set to 0 to disable decay
+decay_slope = .8
 
 
 ##################
@@ -65,19 +73,20 @@ for sim in range(n_simulations):
 
     categories = categoryGeneration(n_categories, features, cat_scope)
 
-    items = itemGeneration(n_categories, features, alpha, n_items, categories)
+    items = itemGeneration(n_categories, features, alpha, n_items, categories, item_scope)
 
 
 ############
 # Hebb Task
 ############
 
-    results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold, decay_rate, decay_slope)
+    results = HebbParadigm(items, positions, n_targets, n_cycles, n_fillers, n_trials, features, threshold, decay_rate, decay_slope, measure)
 
     for r in results:
         r['simulation'] = sim + 1
 
     all_results.extend(results)
+
 
 
 ###################
