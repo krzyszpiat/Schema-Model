@@ -13,6 +13,16 @@ def HebbParadigm(cfg, items, positions):
     decay_rate = cfg['decay_rate']
     decay_slope = cfg['decay_slope']
     measure = cfg['measure']
+    diag = cfg['diag']
+    diag_path = cfg['diag_path']
+
+    # prepare diagnostics logging
+    if diag:
+        f = open(diag_path, 'w') # jeżeli drugi argument to 'a' then it appends
+
+    def log_msg(msg):
+        if diag:
+            f.write(msg + '\n')
 
     # setting an order of trials within a block
     cycle_str = ["F"] * n_fillers + ["H"]
@@ -108,7 +118,14 @@ def HebbParadigm(cfg, items, positions):
         sim_df = pd.DataFrame(
             sim_matrix,
             index=[f"Output {i}" for i in cat_seq],
-            columns=cat_seq)        
+            columns=cat_seq)
+
+        full_sim_df = sim_df.copy()
+
+        log_msg('=' * 48)
+        log_msg(f'Trial {t + 1} | {condition} | Cycle {cycle_index}')
+        log_msg('=' * 48)
+        log_msg(full_sim_df.round(2).to_string())        
         
         # Serial reconstruction
 
@@ -117,12 +134,19 @@ def HebbParadigm(cfg, items, positions):
         for item in range(n_targets):
             if sim_df.iloc[item].max() > threshold:
                 recalled = sim_df.iloc[item].idxmax()
-                if recalled == cat_seq[item]: 
+                acc = recalled == cat_seq[item]
+                if acc: 
                     accuracy += 1
                 sim_df = sim_df.drop(recalled, axis = 1)
                 recalled_items.append(recalled)
             else:
                 recalled_items.append("blank")
+                acc = "omission"
+            log_msg(f'\nPosition {item}:'
+                    f'\n{'-' * 24}'
+                    f'\nTarget: {cat_seq[item]}, Response: {recalled_items[item]}'
+                    f'\nAccuracy: {"CORRECT" if acc == 1 else "incorrect" if acc == 0 else "omission"}')
+
 
         accuracy = accuracy/n_targets
 
@@ -133,6 +157,15 @@ def HebbParadigm(cfg, items, positions):
             'accuracy': accuracy,
             'targets': cat_seq,
             'responses': recalled_items})
+        
+        log_msg('\n')
+        log_msg('*' * 30)
+        log_msg(f'TRIAL {t+1} PERFORMANCE: {accuracy}')
+        log_msg('*' * 30)
+
 
     
+    if diag:
+        f.close()
+
     return results

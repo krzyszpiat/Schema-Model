@@ -11,7 +11,7 @@ from stimuliGeneration import itemGeneration
 # Import variables for the script
 from config import *
 import config
-cfg = {k: v for k, v in vars(config).items() if not k.startswith('__')} #print(pd.Series(cfg))
+cfg = {k: v for k, v in vars(config).items() if not k.startswith('_')} #print(pd.Series(cfg))
 
 
 
@@ -89,6 +89,9 @@ plt.title(f'Hebb Lists vs Filler lists, {n_simulations} simulations')
 print(results_df)
 plt.show()
 
+if diag:
+    import os
+    os.startfile(diag_path)
 
 # Serial position curves
 
@@ -119,3 +122,5 @@ if crvs == 1:
     plt.ylim(0, 1.05)
     plt.title(f'Filler Lists, serial position curve, {n_simulations} simulations')
     plt.show()
+
+
