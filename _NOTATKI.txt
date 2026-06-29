@@ -1,26 +1,10 @@
 NOTATKI
 
-HebbTask.py, line 87: zmienić similarity measure na dot product (?)
-
 
 - W tym momencie zeruję weight matrix na początku bloku. 
     - Można też resetować na początku każdego trialu, wtedy każda lista ma swoje własne pozycje seryjne
         - Można wtedy rozważyć mechanizm wydobywania macierzy przy udziale awareness
-    - Można zaimplementować mechanizm decay w połączeniach
 
-- Uszczegółowić mechanizm wyboru itemów do retrieval set
-
-
-1. Store each outer product separately as it's encoded — a list of n_targets outer product matrices instead of accumulating directly into m
-
-2. After each new encoding, loop back over all previous outer products and apply one decay step to each — using effective_rate = decay_rate * decay_slope ** age where age is how many steps ago that item was encoded
-
-3. Sum all outer products into m at the end of the encoding loop, replacing the current incremental accumulation
-
-4. Update the function signature to include decay_rate and decay_slope parameters
-
-5. Update main.py to pass decay_rate and decay_slope to HebbParadigm()
-
-6. Switch redintegration similarity measure from cosine similarity to dot product to make decay visible in the output
-
-7. Adjust the threshold in main.py since dot product values will no longer be in the 0–1 range
+- Decay:
+    - dodać asymptotę
+    - normalizacja dot-products (czy wektorów?) i dostosowanie thresholdu
