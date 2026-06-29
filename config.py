@@ -33,7 +33,7 @@ n_trials = n_cycles * (1 + n_fillers)
 #########################
 #    MODEL PARAMETERS
 #########################
-alpha = 0.7
-threshold = .8 # will need to be adjusted for the dot products
-decay_rate = .6 # set to 0 to disable decay
-decay_slope = .2
+alpha = .4
+threshold = 5
+decay_rate = .8 # set to 0 to disable decay
+decay_slope = .8

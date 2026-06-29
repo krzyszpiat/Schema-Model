@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 # Import functions for the script
 from HebbTask import HebbParadigm
@@ -39,7 +40,7 @@ for p in range(n_targets):
 
 all_results = []
 
-for sim in range(n_simulations):
+for sim in tqdm(range(n_simulations), desc="Simulations"):
 
 #######################
 # Categories & Items
@@ -63,6 +64,8 @@ for sim in range(n_simulations):
 
 
 
+
+
 ###################
 # Results
 ###################
@@ -83,15 +86,13 @@ plt.ylabel('Accuracy')
 plt.ylim(0, 1.05)
 plt.xticks(range(1, n_cycles + 1))
 plt.legend()
-plt.title(f'Hebb Lists vs Filler lists, {n_simulations} simulations')
+plt.title(f'Hebb Lists vs Filler Lists, {n_simulations} simulations')
 
 
 print(results_df)
 plt.show()
 
-if diag:
-    import os
-    os.startfile(diag_path)
+
 
 # Serial position curves
 
@@ -124,3 +125,6 @@ if crvs == 1:
     plt.show()
 
 
+if diag:
+    import os
+    os.startfile(diag_path)

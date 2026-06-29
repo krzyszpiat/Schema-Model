@@ -1,5 +1,12 @@
 NOTATKI
 
+Sensowne parametry:
+
+alpha = .4
+threshold = 5 
+decay_rate = .8 
+decay_slope = .8
+
 
 - W tym momencie zeruję weight matrix na początku bloku. 
     - Można też resetować na początku każdego trialu, wtedy każda lista ma swoje własne pozycje seryjne

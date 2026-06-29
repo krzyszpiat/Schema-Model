@@ -77,7 +77,9 @@ def HebbParadigm(cfg, items, positions):
                 # Setting the decay rate for the current item to be decayed
                 effective_rate = decay_rate * (decay_slope ** (i - d))
                 # Anti-Hebbian learning
-                m = m - effective_rate * encoded_associations[d]
+                old_assoc = encoded_associations[d].copy()
+                encoded_associations[d] *= (1 - effective_rate)
+                m = m - (old_assoc - encoded_associations[d])
             
 
             
