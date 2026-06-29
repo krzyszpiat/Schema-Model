@@ -13,18 +13,16 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 
 * Fully functional Hebb paradigm
 * Within-category similarity of the targets
-* *Decay mechanism (still being tested)*
+* Decay mechanism
   * Simulated through anti-Hebbian learning of the item-position associations
   * Exponential decay curve
-  * ***Currently anti-Hebbian learning is not bound by zero (negative associations are allowed to be established)***
-  * ***Dot-products need to be normalized (?) and the retrieval threshold needs to be adjusted accordingly***
+  * Decay asymptote at 0
 
 ## What the model does so far
 
 * Simulate benefit of the Hebb lists over Filler lists
   * Purely through superposition! No additional mechanisms required
-* *Simulate recency effect (not sure if for correct reasons though)*
-  * *Everything but the couple last positions is completely dropped from memory...*
+* Simulate recency effect
 
 ## What the model does poorly
 
