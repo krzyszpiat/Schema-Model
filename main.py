@@ -96,33 +96,33 @@ plt.show()
 
 # Serial position curves
 
-if crvs == 1:
-    targets_df = results_df['targets'].apply(pd.Series)
-    responses_df = results_df['responses'].apply(pd.Series)
 
-    position_accuracy = (targets_df == responses_df)
+targets_df = results_df['targets'].apply(pd.Series)
+responses_df = results_df['responses'].apply(pd.Series)
 
-    curves_df = pd.concat([results_df, position_accuracy], axis=1)
+position_accuracy = (targets_df == responses_df)
 
-
-    Hebbs = curves_df[curves_df['type'] == 'Hebb List'][range(n_targets)].mean()
-    Fillers = curves_df[curves_df['type'] == 'Filler List'][range(n_targets)].mean()
-
-    plt.plot(range(1, n_targets+1), Hebbs[range(n_targets)].values, marker='o')
-    plt.xlabel('Serial Position')
-    plt.ylabel('Accuracy')
-    plt.ylim(0, 1.05)
-    plt.title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
-    plt.show()
+curves_df = pd.concat([results_df, position_accuracy], axis=1)
 
 
+Hebbs = curves_df[curves_df['type'] == 'Hebb List'][range(n_targets)].mean()
+Fillers = curves_df[curves_df['type'] == 'Filler List'][range(n_targets)].mean()
 
-    plt.plot(range(1, n_targets+1), Fillers[range(n_targets)].values, marker='o', color = 'orange')
-    plt.xlabel('Serial Position')
-    plt.ylabel('Accuracy')
-    plt.ylim(0, 1.05)
-    plt.title(f'Filler Lists, serial position curve, {n_simulations} simulations')
-    plt.show()
+plt.plot(range(1, n_targets+1), Hebbs[range(n_targets)].values, marker='o')
+plt.xlabel('Serial Position')
+plt.ylabel('Accuracy')
+plt.ylim(0, 1.05)
+plt.title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
+plt.show()
+
+
+
+plt.plot(range(1, n_targets+1), Fillers[range(n_targets)].values, marker='o', color = 'orange')
+plt.xlabel('Serial Position')
+plt.ylabel('Accuracy')
+plt.ylim(0, 1.05)
+plt.title(f'Filler Lists, serial position curve, {n_simulations} simulations')
+plt.show()
 
 
 if diag:

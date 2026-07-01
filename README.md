@@ -1,4 +1,4 @@
-# SChema Associative Model (SCAM)
+# SChema Associative Model (ScAM)
 
 Model simulates the process of incidental schema learning in the Hebb repetition paradigm as observed in [Piątkowski, Zawadzka \& Hanczakowski, 2026](https://psycnet.apa.org/record/2027-83839-001)
 
@@ -28,10 +28,12 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 
 * No primacy effect
 * Performance in the filler lists goes down instead of staying relatively constant
+* No decay for the last item in the trial
+  * Might be fixed by the last ISI
 
 ## What needs to be implemented
 
-* **Refreshing mechanism**
+* Refreshing mechanism (currently tested)
 * **Non-orthogonal serial positions**
 * episodic LTM layer (?)
 * semantic LTM layer (??)

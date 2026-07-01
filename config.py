@@ -5,8 +5,10 @@
 diag = 1
 diag_path = 'outputs\\snapshot.txt'
 
-# print position curves? (1 = yes)
-crvs = 1
+# Open plots? (1 = yes, 2 = only Hebb effect)
+show_plots = 1
+# Open snapshot? (1 = yes)
+show_snapshot = 1
 
 # Wchich similarity measure?
 #measure = "cosim"
