@@ -18,7 +18,7 @@ measure = "dot"
 cat_scope = -1 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
 item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
 
-n_simulations = 10
+n_simulations = 50
 features = 100
 
 n_targets = 8 # number of targets per trial

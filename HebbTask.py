@@ -145,6 +145,15 @@ def HebbParadigm(cfg, items, positions):
 
                 ### DECAY ###
 
+                for d in range(i):
+                    if not d == weakest: 
+                        # Setting the decay rate for the current item to be decayed
+                        effective_rate = (decay_rate * (decay_slope ** (i - d))) / n_refreshing_cycles
+                        # Anti-Hebbian learning
+                        old_assoc = encoded_associations[d].copy()
+                        encoded_associations[d] *= (1 - effective_rate)
+                        associations_strengths[d] *= (1 - effective_rate)
+                        m = m - (old_assoc - encoded_associations[d])
             
 
             
