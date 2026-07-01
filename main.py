@@ -151,8 +151,19 @@ plt.savefig(f'{output_dir}/curves.png')
 plt.close()
 
 
+p = open(f'{output_dir}\\simulation parameters.txt', 'w') # jeżeli drugi argument to 'a' then it appends
+
+p.write(f'SIMULATIONS = {n_simulations}\n\n')
+p.write(f'alpha = {alpha}\n')
+p.write(f'threshold = {threshold}\n')
+p.write(f'decay_rate = {decay_rate}\n')
+p.write(f'decay_slope = {decay_slope}\n')
+
+p.close()
+
+
 if show_snapshot:
-    os.startfile(output_dir)
+    os.startfile(f'{output_dir}\\snapshot.txt')
 
 if show_plots == 1:
     os.startfile(f'{output_dir}\\hebb_effect.png')

@@ -14,7 +14,6 @@ def HebbParadigm(cfg, items, positions, output_dir):
     decay_slope = cfg['decay_slope']
     measure = cfg['measure']
     diag = cfg['diag']
-    diag_path = cfg['diag_path']
 
     # prepare diagnostics logging
     if diag:
