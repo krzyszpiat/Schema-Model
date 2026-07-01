@@ -50,6 +50,7 @@ for p in range(n_targets):
 
 
 all_results = []
+all_logs = []
 
 for sim in tqdm(range(n_simulations), desc="Simulations"):
 
@@ -66,16 +67,18 @@ for sim in tqdm(range(n_simulations), desc="Simulations"):
 # Hebb Task
 ############
 
-    results = HebbParadigm(cfg, items, positions, output_dir)
+    results, encoding_log, retrieval_log = HebbParadigm(cfg, items, positions, output_dir)
 
     for r in results:
         r['simulation'] = sim + 1
 
     all_results.extend(results)
+    all_logs.extend(retrieval_log)
 
 
+logs_df = pd.concat(all_logs, ignore_index=True)
 
-
+logs_df.to_csv(f'{output_dir}/simulation_log.csv', index=False)
 
 ###################
 # Results
@@ -91,7 +94,6 @@ filler_acc = results_df[results_df['type'] == 'Filler List'].groupby('cycle')['a
 
 plt.plot(hebb_acc.index, hebb_acc.values, label='Hebb List', marker='o')
 plt.plot(filler_acc.index, filler_acc.values, label='Filler List', marker='o')
-
 plt.xlabel('Cycle')
 plt.ylabel('Accuracy')
 plt.ylim(0, 1.05)
@@ -130,6 +132,7 @@ ax1.set_xlabel('Serial Position')
 ax1.set_ylabel('Accuracy')
 ax1.set_ylim(0, 1.05)
 ax1.set_title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
+ax1.legend()
 
 
 # Curves plot: Fillers
@@ -146,6 +149,7 @@ ax2.set_xlabel('Serial Position')
 ax2.set_ylabel('Accuracy')
 ax2.set_ylim(0, 1.05)
 ax2.set_title(f'Filler Lists, serial position curve, {n_simulations} simulations')
+ax2.legend()
 
 plt.savefig(f'{output_dir}/curves.png')
 plt.close()

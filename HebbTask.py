@@ -31,6 +31,8 @@ def HebbParadigm(cfg, items, positions, output_dir):
     m = np.zeros((features, features))
 
     results = []
+    encoding_log = []
+    retrieval_log = []
 
     for t in range(n_trials):
         
@@ -81,7 +83,14 @@ def HebbParadigm(cfg, items, positions, output_dir):
                 m = m - (old_assoc - encoded_associations[d])
             
 
-            
+            encoding_log.append({
+                'type': condition,
+                'cycle': cycle_index + 1,
+                'trial': t + 1,
+                'position': i,
+                'category': cur_cat,
+                'item_index': cycle_index
+                })    
 
     ##################
     # Retrieval Phase
@@ -122,6 +131,12 @@ def HebbParadigm(cfg, items, positions, output_dir):
             columns=cat_seq)
 
         full_sim_df = sim_df.copy()
+
+        sim_log_entry = pd.DataFrame(sim_matrix.copy())
+        sim_log_entry['trial'] = t + 1
+        sim_log_entry['cycle'] = cycle_index
+        sim_log_entry['type'] = condition
+        retrieval_log.append(sim_log_entry)
 
         log_msg('=' * 48)
         log_msg(f'Trial {t + 1} | {condition} | Cycle {cycle_index}')
@@ -169,4 +184,4 @@ def HebbParadigm(cfg, items, positions, output_dir):
     if diag:
         f.close()
 
-    return results
+    return results, encoding_log, retrieval_log
