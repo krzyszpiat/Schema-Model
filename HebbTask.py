@@ -15,6 +15,7 @@ def HebbParadigm(cfg, items, positions):
     measure = cfg['measure']
     diag = cfg['diag']
     diag_path = cfg['diag_path']
+    n_refreshing_cycles = cfg['n_refreshing_cycles']
 
     # prepare diagnostics logging
     if diag:
@@ -55,12 +56,23 @@ def HebbParadigm(cfg, items, positions):
             condition = "Hebb List"
 
 
-    #################
-    # Learning Phase
-    ################# 
+        #################
+        # LEARNING PHASE
+        ################# 
 
         encoded_associations = []
 
+
+        for i in range(n_targets):
+
+            ### ENCODING A TARGET ###
+
+
+            ### INTER STIMULUS INTERVAL ###
+
+
+
+        # Old loop
         # Hebbian learning
         for i in range(n_targets):
             ### ENCODING ###
@@ -84,9 +96,9 @@ def HebbParadigm(cfg, items, positions):
 
             
 
-    ##################
-    # Retrieval Phase
-    ##################
+        ##################
+        # Retrieval Phase
+        ##################
 
         outputs = []
 
@@ -95,9 +107,9 @@ def HebbParadigm(cfg, items, positions):
             outputs.append(output)
 
 
-    ###################
-    # Redintegration
-    ###################
+        ###################
+        # Redintegration
+        ###################
 
         # Calculating input-output weight matrix
         
