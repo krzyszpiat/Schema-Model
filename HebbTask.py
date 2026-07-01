@@ -142,6 +142,7 @@ def HebbParadigm(cfg, items, positions):
                     refreshing_strength = refresh_rate * gap
 
                     m = m + np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
+                    associations_strengths[weakest] += refreshing_strength
 
                 ### DECAY ###
 
