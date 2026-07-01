@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from utils import cosim
 
-def HebbParadigm(cfg, items, positions):
+def HebbParadigm(cfg, items, positions, output_dir):
 
     n_targets = cfg['n_targets'] 
     n_cycles = cfg['n_cycles']
@@ -18,7 +18,7 @@ def HebbParadigm(cfg, items, positions):
 
     # prepare diagnostics logging
     if diag:
-        f = open(diag_path, 'w') # jeżeli drugi argument to 'a' then it appends
+        f = open(f'{output_dir}\\snapshot.txt', 'w') # jeżeli drugi argument to 'a' then it appends
 
     def log_msg(msg):
         if diag:

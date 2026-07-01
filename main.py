@@ -1,3 +1,5 @@
+import os
+import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -12,7 +14,16 @@ from stimuliGeneration import itemGeneration
 # Import variables for the script
 from config import *
 import config
-cfg = {k: v for k, v in vars(config).items() if not k.startswith('_')} #print(pd.Series(cfg))
+cfg = {k: v for k, v in vars(config).items() if not k.startswith('_')}
+
+
+if save_unique:
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
+    output_dir = f'outputs\\{timestamp}'
+else:
+    output_dir = 'outputs\\latest'
+
+os.makedirs(output_dir, exist_ok=True)
 
 
 
@@ -55,7 +66,7 @@ for sim in tqdm(range(n_simulations), desc="Simulations"):
 # Hebb Task
 ############
 
-    results = HebbParadigm(cfg, items, positions)
+    results = HebbParadigm(cfg, items, positions, output_dir)
 
     for r in results:
         r['simulation'] = sim + 1
@@ -87,44 +98,64 @@ plt.ylim(0, 1.05)
 plt.xticks(range(1, n_cycles + 1))
 plt.legend()
 plt.title(f'Hebb Lists vs Filler Lists, {n_simulations} simulations')
-
-
-print(results_df)
-plt.show()
-
+plt.savefig(f'{output_dir}/hebb_effect.png')
+plt.close()
 
 
 # Serial position curves
-
-
 targets_df = results_df['targets'].apply(pd.Series)
 responses_df = results_df['responses'].apply(pd.Series)
 
 position_accuracy = (targets_df == responses_df)
-
 curves_df = pd.concat([results_df, position_accuracy], axis=1)
 
-
-Hebbs = curves_df[curves_df['type'] == 'Hebb List'][range(n_targets)].mean()
-Fillers = curves_df[curves_df['type'] == 'Filler List'][range(n_targets)].mean()
-
-plt.plot(range(1, n_targets+1), Hebbs[range(n_targets)].values, marker='o')
-plt.xlabel('Serial Position')
-plt.ylabel('Accuracy')
-plt.ylim(0, 1.05)
-plt.title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
-plt.show()
+Hebbs = curves_df[curves_df['type'] == 'Hebb List'].groupby('cycle')[list(range(n_targets))].mean()
+Fillers = curves_df[curves_df['type'] == 'Filler List'].groupby('cycle')[list(range(n_targets))].mean()
 
 
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
 
-plt.plot(range(1, n_targets+1), Fillers[range(n_targets)].values, marker='o', color = 'orange')
-plt.xlabel('Serial Position')
-plt.ylabel('Accuracy')
-plt.ylim(0, 1.05)
-plt.title(f'Filler Lists, serial position curve, {n_simulations} simulations')
-plt.show()
+# Curves plots: Hebb
+
+colors = plt.cm.Blues(np.linspace(0.3, 1.0, n_cycles))
+
+for c, (cycle, row) in enumerate(Hebbs.iterrows()):
+    ax1.plot(range(1, n_targets + 1), 
+             row.values, 
+             marker='o', 
+             color=colors[c], 
+             label=f'Cycle {cycle + 1}')
+
+ax1.set_xlabel('Serial Position')
+ax1.set_ylabel('Accuracy')
+ax1.set_ylim(0, 1.05)
+ax1.set_title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
 
 
-if diag:
-    import os
-    os.startfile(diag_path)
+# Curves plot: Fillers
+colors = plt.cm.Oranges(np.linspace(0.3, 1.0, n_cycles))
+
+for c, (cycle, row) in enumerate(Fillers.iterrows()):
+    ax2.plot(range(1, n_targets + 1), 
+             row.values, 
+             marker='o', 
+             color=colors[c], 
+             label=f'Cycle {cycle + 1}')
+    
+ax2.set_xlabel('Serial Position')
+ax2.set_ylabel('Accuracy')
+ax2.set_ylim(0, 1.05)
+ax2.set_title(f'Filler Lists, serial position curve, {n_simulations} simulations')
+
+plt.savefig(f'{output_dir}/curves.png')
+plt.close()
+
+
+if show_snapshot:
+    os.startfile(output_dir)
+
+if show_plots == 1:
+    os.startfile(f'{output_dir}\\hebb_effect.png')
+    os.startfile(f'{output_dir}\\curves.png')
+elif show_plots == 2:
+    os.startfile(f'{output_dir}\\hebb_effect.png')

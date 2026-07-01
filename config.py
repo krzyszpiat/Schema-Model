@@ -5,6 +5,9 @@
 diag = 1
 diag_path = 'outputs\\snapshot.txt'
 
+# Save in new folder (0 = overwrite old data)
+save_unique = 1
+
 # Open plots? (1 = yes, 2 = only Hebb effect)
 show_plots = 1
 # Open snapshot? (1 = yes)
@@ -20,7 +23,7 @@ measure = "dot"
 cat_scope = -1 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
 item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
 
-n_simulations = 100
+n_simulations = 10
 features = 100
 
 n_targets = 8 # number of targets per trial
