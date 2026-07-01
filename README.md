@@ -7,7 +7,7 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 * **alpha** (0-1): similarity between the category prototype and category exemplars
 * **threshold** (depending on similarity measure): degree of similarity between retrieved representations and response candidates; if below, response is omitted
 * **decay\_rate** (0-1): initial value of decay strength, if set to 0 decay disabled
-* **decay\_slope** (0-1): shape of the decay function, the lower the faster initial decay
+* **decay\_slope** (0-1): shape of the decay function, the higher the faster initial decay
 
 ## Mechanisms implemented so far
 
@@ -28,6 +28,8 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 
 * No primacy effect
 * Performance in the filler lists goes down instead of staying relatively constant
+* No decay for the last item in the trial
+  * Might be fixed by the last ISI
 
 ## What needs to be implemented
 

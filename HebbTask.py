@@ -16,6 +16,8 @@ def HebbParadigm(cfg, items, positions):
     diag = cfg['diag']
     diag_path = cfg['diag_path']
     n_refreshing_cycles = cfg['n_refreshing_cycles']
+    refresh_threshold = cfg['refresh_threshold']
+    refresh_rate = cfg['refresh_rate']
 
     # prepare diagnostics logging
     if diag:
@@ -61,37 +63,88 @@ def HebbParadigm(cfg, items, positions):
         ################# 
 
         encoded_associations = []
+        associations_strengths = []
+        targets = []
 
 
         for i in range(n_targets):
 
-            ### ENCODING A TARGET ###
+            ###########################
+            ### TARGET PRESENTATION ###
+            ###########################
 
 
-            ### INTER STIMULUS INTERVAL ###
+            ### ENCODING THE CURRENT ITEM ###
 
-
-
-        # Old loop
-        # Hebbian learning
-        for i in range(n_targets):
-            ### ENCODING ###
-            # selecting category to be presented
+            # Select category to be encoded on the current position
             cur_cat = cat_seq[i]
-            # selecting item from the current category
-            cur_item = items[(cur_cat, cycle_index)]# this line above can be hardcoded to cur_item = items[(cur_cat,0)] and simulate standard Hebb
-            # associating current item with the current serial position
+            # Select the item to be encoded from the selected category
+            cur_item = items[(cur_cat, cycle_index)]# this line can be hardcoded to cur_item = items[(cur_cat,0)] and simulate standard Hebb
+            targets.append(cur_item)
+            # Associate the current target with the active serial position
             outerProduct = np.outer(positions[i], cur_item)
             encoded_associations.append(outerProduct)
+            associations_strengths.append(1.0)
             m = m + outerProduct
-            ### DECAY ###
+
+
+            ### DECAY OF THE PREVIOUS ITEMS ###
+
             for d in range(i):
                 # Setting the decay rate for the current item to be decayed
                 effective_rate = decay_rate * (decay_slope ** (i - d))
                 # Anti-Hebbian learning
                 old_assoc = encoded_associations[d].copy()
                 encoded_associations[d] *= (1 - effective_rate)
+                associations_strengths[d] *= (1 - effective_rate)
                 m = m - (old_assoc - encoded_associations[d])
+
+            ###############################
+            ### INTER STIMULUS INTERVAL ###
+            ###############################
+
+            for c in range(n_refreshing_cycles):
+                candidates = {}
+
+                ### REFRESHING ###
+                ##  Retrieve the strongest item for each position ##
+                retrieved_inx = None
+                for pos in (range(i + 1)):
+                    # Fetch a vector from the weight matrix using current position
+                    cand = np.dot(positions[pos],m)
+                    # Redintegrate the fetched vector
+                    redintegrated = None
+                    stren = 0
+                    for tar in range(i + 1):
+                        red_cand_str = np.dot(cand, targets[tar])
+                        if red_cand_str > refresh_threshold and red_cand_str > stren:
+                            redintegrated = targets[tar]
+                            stren = red_cand_str
+                            retrieved_inx = tar
+                    # Record the retrieved representation
+                    candidates[pos] = {'candidate': redintegrated, 
+                                       'strength': associations_strengths[retrieved_inx] if retrieved_inx is not None else None}
+
+                # Select the position with the most decayed representation
+                valid_candidates = {pos: val for pos, val in candidates.items() if val['candidate'] is not None}
+
+                if valid_candidates:
+                    weakest = None
+                    weakest_strength = float('inf')
+
+                    for pos in valid_candidates:
+                        if valid_candidates[pos]['strength'] < weakest_strength:
+                            weakest_strength = candidates[pos]['strength']
+                            weakest = pos
+
+                    # Refresh the weakest representation
+                    gap = 1.0 - associations_strengths[weakest]
+                    refreshing_strength = refresh_rate * gap
+
+                    m = m + np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
+
+                ### DECAY ###
+
             
 
             

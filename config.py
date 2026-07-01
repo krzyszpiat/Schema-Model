@@ -18,7 +18,7 @@ measure = "dot"
 cat_scope = -1 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
 item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
 
-n_simulations = 100
+n_simulations = 10
 features = 100
 
 n_targets = 8 # number of targets per trial
@@ -35,5 +35,8 @@ n_trials = n_cycles * (1 + n_fillers)
 #########################
 alpha = .4
 threshold = 5
+refresh_threshold = threshold
 decay_rate = .8 # set to 0 to disable decay
 decay_slope = .8
+n_refreshing_cycles = 10
+refresh_rate = .2
