@@ -15,3 +15,6 @@ decay_slope = .8
 - Decay:
     - dodać asymptotę
     - normalizacja dot-products (czy wektorów?) i dostosowanie thresholdu
+
+
+Siła asocjacji itemu z pozycją można spróbować sprawdzić bezpośrednio licząc normę outerproduct itemu z daną pozycją (?)

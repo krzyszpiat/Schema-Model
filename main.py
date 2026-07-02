@@ -55,7 +55,6 @@ for p in range(n_targets):
 diag = Diagnostics(level=cfg['diag_level'])
 
 all_results = []
-all_logs = []
 
 for sim in tqdm(range(n_simulations), desc="Simulations"):
     diag.set_context(simulation=sim + 1)
@@ -73,18 +72,13 @@ for sim in tqdm(range(n_simulations), desc="Simulations"):
 # Hebb Task
 ############
 
-    results, encoding_log, retrieval_log = HebbParadigm(cfg, items, positions, output_dir, diag)
+    results = HebbParadigm(cfg, items, positions, output_dir, diag)
 
     for r in results:
         r['simulation'] = sim + 1
 
     all_results.extend(results)
-    all_logs.extend(retrieval_log)
 
-
-logs_df = pd.concat(all_logs, ignore_index=True)
-
-logs_df.to_csv(f'{output_dir}/simulation_log.csv', index=False)
 diag.save(output_dir)
 
 ###################

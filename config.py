@@ -8,12 +8,12 @@ snapshot_on = 1
 diag_level = 3
 
 # Save in new folder (0 = overwrite old data)
-save_unique = 1
+save_unique = 0
 
 # Open plots? (1 = yes, 2 = only Hebb effect)
-show_plots = 0
+show_plots = 1
 # Open snapshot? (1 = yes)
-show_snapshot = 0
+show_snapshot = 1
 
 # Wchich similarity measure?
 #measure = "cosim"
