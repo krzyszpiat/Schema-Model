@@ -9,6 +9,7 @@ from tqdm import tqdm
 from HebbTask import HebbParadigm
 from stimuliGeneration import categoryGeneration
 from stimuliGeneration import itemGeneration
+from stimuliGeneration import positionGeneration
 from diagnostics import Diagnostics
 
 
@@ -31,23 +32,8 @@ os.makedirs(output_dir, exist_ok=True)
 ##################
 # Serial positions
 ##################
-positions = []
 
-# Creating random vectors for serial positions
-for p in range(n_targets):
-    random_vector = np.random.rand(features)
-    positions.append(random_vector)
-
-# Making the position vectors orthogonal
-pos_matrix = np.column_stack(positions)
-
-Q, R = np.linalg.qr(pos_matrix) # QR decomposition 
-
-positions = []
-
-for p in range(n_targets):
-    position = Q[:,p]
-    positions.append(position)
+positions = positionGeneration(cfg)
 
 
 # Prepare bins for collecting data
