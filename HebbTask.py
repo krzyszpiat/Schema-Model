@@ -75,6 +75,11 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
             outerProduct = np.outer(positions[i], cur_item)
             encoded_associations.append(outerProduct)
             m = m + outerProduct
+            diag.log('encoding',
+                     position=i,
+                     category=cur_cat,
+                     item_index=cycle_index,
+                     encoding_strength=np.linalg.norm(outerProduct))
             ### DECAY ###
             for d in range(i):
                 # Setting the decay rate for the current item to be decayed
@@ -83,6 +88,11 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                 old_assoc = encoded_associations[d].copy()
                 encoded_associations[d] *= (1 - effective_rate)
                 m = m - (old_assoc - encoded_associations[d])
+                diag.log('decay',
+                         at_position=i,
+                         decayed_position=d,
+                         effective_rate=effective_rate,
+                         strength_after=np.linalg.norm(encoded_associations[d]))
             
 
             encoding_log.append({
@@ -122,6 +132,11 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                     row.append(np.dot(outputs[o], items[(cur_cat, cycle_index)]))
                 elif measure == "cosim":
                     row.append(cosim(outputs[o], items[(cur_cat, cycle_index)]))
+                diag.log('retrieval',
+                         output_position=o,
+                         candidate_position=i,
+                         candidate_category=cur_cat,
+                         similarity=row[-1])
             sim_matrix.append(row)
        
       
