@@ -2,4 +2,12 @@ __pycache__/
 .claude/
 
 /outputs
+
+
 *.png
+*.Rproj
+
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
