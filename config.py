@@ -40,6 +40,7 @@ n_trials = n_cycles * (1 + n_fillers)
 #########################
 #    MODEL PARAMETERS
 #########################
+phi = .5
 alpha = .4
 threshold = 5
 refresh_threshold = threshold

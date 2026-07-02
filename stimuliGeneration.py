@@ -1,4 +1,5 @@
 import numpy as np
+from utils import unit
 
 def categoryGeneration(cfg):
     n_categories = cfg['n_categories']
@@ -43,3 +44,37 @@ def itemGeneration(cfg, categories):
             items[(c,i)] = item
 
     return items
+
+def positionGeneration(cfg):
+    pos_switch = cfg['positions']
+    phi = cfg['phi']
+    features = cfg['features']
+    n_targets = cfg['n_targets']
+    positions = []
+
+    if pos_switch == "o":
+    # Creating random vectors for serial positions
+        for p in range(n_targets):
+            random_vector = np.random.rand(features)
+            positions.append(random_vector)
+
+        # Making the position vectors orthogonal
+        pos_matrix = np.column_stack(positions)
+
+        Q, R = np.linalg.qr(pos_matrix) # QR decomposition 
+
+        for p in range(n_targets):
+            position = Q[:,p]
+            positions.append(position)
+
+    elif pos_switch == "no":
+
+        positions.append(unit(np.random.randn(features)))
+
+        for p in range(n_targets-1):
+            noise = unit(np.random.randn(features))
+            position_vector = phi * positions[p] + (1 - phi) * noise
+            position_vector = unit(position_vector)
+            positions.append(position_vector)
+
+    return positions
