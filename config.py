@@ -2,10 +2,13 @@
 #        FLAGS
 #########################
 # Collect diagnostics? (1 = yes)
-diag = 1
+snapshot_on = 1
+
+# Diagnostics detail level (1 = only trials, 2 = + recall/encoding, 3 = everything)
+diag_level = 3
 
 # Save in new folder (0 = overwrite old data)
-save_unique = 0
+save_unique = 1
 
 # Open plots? (1 = yes, 2 = only Hebb effect)
 show_plots = 0

@@ -1,6 +1,15 @@
 import pandas as pd
 
 class Diagnostics:
+    
+    LEVELS = {
+        'trials': 1,
+        'recall': 2,
+        'encoding': 2,
+        'retrieval': 3,
+        'decay': 3,
+    }
+
     def __init__(self, level=3, enabled=True):
         self.level = level
         self.enabled = enabled
@@ -12,6 +21,8 @@ class Diagnostics:
 
     def log(self, table, **fields):
         if not self.enabled:
+            return
+        if self.LEVELS.get(table, 1) > self.level:
             return
         row = {**self.context, **fields}
         self.tables.setdefault(table, []).append(row)

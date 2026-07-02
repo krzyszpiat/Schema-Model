@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from utils import cosim
 
-def HebbParadigm(cfg, items, positions, output_dir):
+def HebbParadigm(cfg, items, positions, output_dir, diag):
 
     n_targets = cfg['n_targets'] 
     n_cycles = cfg['n_cycles']
@@ -13,14 +13,14 @@ def HebbParadigm(cfg, items, positions, output_dir):
     decay_rate = cfg['decay_rate']
     decay_slope = cfg['decay_slope']
     measure = cfg['measure']
-    diag = cfg['diag']
+    snapshot_on = cfg['snapshot_on']
 
     # prepare diagnostics logging
-    if diag:
+    if snapshot_on:
         f = open(f'{output_dir}\\snapshot.txt', 'w') # jeżeli drugi argument to 'a' then it appends
 
     def log_msg(msg):
-        if diag:
+        if snapshot_on:
             f.write(msg + '\n')
 
     # setting an order of trials within a block
@@ -54,6 +54,8 @@ def HebbParadigm(cfg, items, positions, output_dir):
         elif trial_type == "H":
             cat_seq = selection
             condition = "Hebb List"
+
+        diag.set_context(trial=t + 1, cycle=cycle_index, type=condition)        
 
 
     #################
@@ -162,9 +164,16 @@ def HebbParadigm(cfg, items, positions, output_dir):
                     f'\n{'-' * 24}'
                     f'\nTarget: {cat_seq[item]}, Response: {recalled_items[item]}'
                     f'\nAccuracy: {"CORRECT" if acc == 1 else "incorrect" if acc == 0 else "omission"}')
+            diag.log('recall',
+                     position=item,
+                     target=cat_seq[item],
+                     response=recalled_items[item],
+                     accuracy="correct" if acc == 1 else "incorrect" if acc == 0 else "omission")
 
 
         accuracy = accuracy/n_targets
+
+        diag.log('trials', accuracy=accuracy)
 
         results.append({
             'trial': t + 1, 
@@ -181,7 +190,7 @@ def HebbParadigm(cfg, items, positions, output_dir):
 
 
     
-    if diag:
+    if snapshot_on:
         f.close()
 
     return results, encoding_log, retrieval_log
