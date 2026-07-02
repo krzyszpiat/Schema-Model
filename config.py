@@ -11,9 +11,9 @@ diag_level = 3
 save_unique = 0
 
 # Open plots? (1 = yes, 2 = only Hebb effect)
-show_plots = 1
+show_plots = 2
 # Open snapshot? (1 = yes)
-show_snapshot = 1
+show_snapshot = 0
 
 # Wchich similarity measure?
 #measure = "cosim"
@@ -25,7 +25,7 @@ measure = "dot"
 cat_scope = -1 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
 item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
 
-n_simulations = 10
+n_simulations = 100
 features = 100
 
 n_targets = 8 # number of targets per trial

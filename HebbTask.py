@@ -158,11 +158,11 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                         encoded_associations[d] *= (1 - effective_rate)
                         associations_strengths[d] *= (1 - effective_rate)
                         m = m - (old_assoc - encoded_associations[d])
-                diag.log('decay',
-                         at_position=i,
-                         decayed_position=d,
-                         effective_rate=effective_rate,
-                         strength_after=np.linalg.norm(encoded_associations[d])) 
+                        diag.log('decay',
+                                at_position=i,
+                                decayed_position=d,
+                                effective_rate=effective_rate,
+                                strength_after=np.linalg.norm(encoded_associations[d])) 
 
         ##################
         # Retrieval Phase
