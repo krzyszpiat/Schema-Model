@@ -20,3 +20,5 @@ decay_slope = .8
 
 
 Siła asocjacji itemu z pozycją można spróbować sprawdzić bezpośrednio licząc normę outerproduct itemu z daną pozycją (?)
+
+Znormalizować stren?

@@ -20,7 +20,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
 
     # prepare diagnostics logging
     if snapshot_on:
-        f = open(f'{output_dir}\\snapshot.txt', 'w') # jeżeli drugi argument to 'a' then it appends
+        f = open(f'{output_dir}\\snapshot.txt', 'w')
 
     def log_msg(msg):
         if snapshot_on:
@@ -87,11 +87,13 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
             encoded_associations.append(outerProduct)
             associations_strengths.append(1.0)
             m = m + outerProduct
+            
             diag.log('encoding',
                      position=i,
                      category=cur_cat,
                      item_index=cycle_index,
                      encoding_strength=np.linalg.norm(outerProduct))
+            
             ### DECAY ###
             for d in range(i):
                 # Setting the decay rate for the current item to be decayed
@@ -126,7 +128,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                             retrieved_inx = tar
                     # Record the retrieved representation
                     candidates[pos] = {'candidate': redintegrated, 
-                                       'strength': associations_strengths[retrieved_inx] if retrieved_inx is not None else None}
+                                       'strength': stren}
 
                 # Select the position with the most decayed representation
                 valid_candidates = {pos: val for pos, val in candidates.items() if val['candidate'] is not None}
