@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from utils import cosim
 
-def HebbParadigm(cfg, items, positions):
+def HebbParadigm(cfg, items, positions, output_dir, diag):
 
     n_targets = cfg['n_targets'] 
     n_cycles = cfg['n_cycles']
@@ -13,18 +13,17 @@ def HebbParadigm(cfg, items, positions):
     decay_rate = cfg['decay_rate']
     decay_slope = cfg['decay_slope']
     measure = cfg['measure']
-    diag = cfg['diag']
-    diag_path = cfg['diag_path']
+    snapshot_on = cfg['snapshot_on']
     n_refreshing_cycles = cfg['n_refreshing_cycles']
     refresh_threshold = cfg['refresh_threshold']
     refresh_rate = cfg['refresh_rate']
 
     # prepare diagnostics logging
-    if diag:
-        f = open(diag_path, 'w') # jeżeli drugi argument to 'a' then it appends
+    if snapshot_on:
+        f = open(f'{output_dir}\\snapshot.txt', 'w') # jeżeli drugi argument to 'a' then it appends
 
     def log_msg(msg):
-        if diag:
+        if snapshot_on:
             f.write(msg + '\n')
 
     # setting an order of trials within a block
@@ -57,6 +56,8 @@ def HebbParadigm(cfg, items, positions):
             cat_seq = selection
             condition = "Hebb List"
 
+        diag.set_context(trial=t + 1, cycle=cycle_index, type=condition)        
+
 
         #################
         # LEARNING PHASE
@@ -86,10 +87,12 @@ def HebbParadigm(cfg, items, positions):
             encoded_associations.append(outerProduct)
             associations_strengths.append(1.0)
             m = m + outerProduct
-
-
-            ### DECAY OF THE PREVIOUS ITEMS ###
-
+            diag.log('encoding',
+                     position=i,
+                     category=cur_cat,
+                     item_index=cycle_index,
+                     encoding_strength=np.linalg.norm(outerProduct))
+            ### DECAY ###
             for d in range(i):
                 # Setting the decay rate for the current item to be decayed
                 effective_rate = decay_rate * (decay_slope ** (i - d))
@@ -155,9 +158,11 @@ def HebbParadigm(cfg, items, positions):
                         encoded_associations[d] *= (1 - effective_rate)
                         associations_strengths[d] *= (1 - effective_rate)
                         m = m - (old_assoc - encoded_associations[d])
-            
-
-            
+                diag.log('decay',
+                         at_position=i,
+                         decayed_position=d,
+                         effective_rate=effective_rate,
+                         strength_after=np.linalg.norm(encoded_associations[d])) 
 
         ##################
         # Retrieval Phase
@@ -187,6 +192,11 @@ def HebbParadigm(cfg, items, positions):
                     row.append(np.dot(outputs[o], items[(cur_cat, cycle_index)]))
                 elif measure == "cosim":
                     row.append(cosim(outputs[o], items[(cur_cat, cycle_index)]))
+                diag.log('retrieval',
+                         output_position=o,
+                         candidate_position=i,
+                         candidate_category=cur_cat,
+                         similarity=row[-1])
             sim_matrix.append(row)
        
       
@@ -223,9 +233,16 @@ def HebbParadigm(cfg, items, positions):
                     f'\n{'-' * 24}'
                     f'\nTarget: {cat_seq[item]}, Response: {recalled_items[item]}'
                     f'\nAccuracy: {"CORRECT" if acc == 1 else "incorrect" if acc == 0 else "omission"}')
+            diag.log('recall',
+                     position=item,
+                     target=cat_seq[item],
+                     response=recalled_items[item],
+                     accuracy="correct" if acc == 1 else "incorrect" if acc == 0 else "omission")
 
 
         accuracy = accuracy/n_targets
+
+        diag.log('trials', accuracy=accuracy)
 
         results.append({
             'trial': t + 1, 
@@ -242,7 +259,7 @@ def HebbParadigm(cfg, items, positions):
 
 
     
-    if diag:
+    if snapshot_on:
         f.close()
 
     return results

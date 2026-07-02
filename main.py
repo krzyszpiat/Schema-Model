@@ -1,3 +1,5 @@
+import os
+import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,12 +9,22 @@ from tqdm import tqdm
 from HebbTask import HebbParadigm
 from stimuliGeneration import categoryGeneration
 from stimuliGeneration import itemGeneration
+from diagnostics import Diagnostics
 
 
 # Import variables for the script
 from config import *
 import config
-cfg = {k: v for k, v in vars(config).items() if not k.startswith('_')} #print(pd.Series(cfg))
+cfg = {k: v for k, v in vars(config).items() if not k.startswith('_')}
+
+# Determine the folder for saving outputs
+if save_unique:
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
+    output_dir = f'outputs\\{timestamp}'
+else:
+    output_dir = 'outputs\\latest'
+
+os.makedirs(output_dir, exist_ok=True)
 
 
 
@@ -38,9 +50,14 @@ for p in range(n_targets):
     positions.append(position)
 
 
+# Prepare bins for collecting data
+
+diag = Diagnostics(level=cfg['diag_level'])
+
 all_results = []
 
 for sim in tqdm(range(n_simulations), desc="Simulations"):
+    diag.set_context(simulation=sim + 1)
 
 #######################
 # Categories & Items
@@ -55,16 +72,14 @@ for sim in tqdm(range(n_simulations), desc="Simulations"):
 # Hebb Task
 ############
 
-    results = HebbParadigm(cfg, items, positions)
+    results = HebbParadigm(cfg, items, positions, output_dir, diag)
 
     for r in results:
         r['simulation'] = sim + 1
 
     all_results.extend(results)
 
-
-
-
+diag.save(output_dir)
 
 ###################
 # Results
@@ -80,51 +95,83 @@ filler_acc = results_df[results_df['type'] == 'Filler List'].groupby('cycle')['a
 
 plt.plot(hebb_acc.index, hebb_acc.values, label='Hebb List', marker='o')
 plt.plot(filler_acc.index, filler_acc.values, label='Filler List', marker='o')
-
 plt.xlabel('Cycle')
 plt.ylabel('Accuracy')
 plt.ylim(0, 1.05)
 plt.xticks(range(1, n_cycles + 1))
 plt.legend()
 plt.title(f'Hebb Lists vs Filler Lists, {n_simulations} simulations')
-
-
-print(results_df)
-plt.show()
-
+plt.savefig(f'{output_dir}/hebb_effect.png')
+plt.close()
 
 
 # Serial position curves
+targets_df = results_df['targets'].apply(pd.Series)
+responses_df = results_df['responses'].apply(pd.Series)
 
-if crvs == 1:
-    targets_df = results_df['targets'].apply(pd.Series)
-    responses_df = results_df['responses'].apply(pd.Series)
+position_accuracy = (targets_df == responses_df)
+curves_df = pd.concat([results_df, position_accuracy], axis=1)
 
-    position_accuracy = (targets_df == responses_df)
-
-    curves_df = pd.concat([results_df, position_accuracy], axis=1)
-
-
-    Hebbs = curves_df[curves_df['type'] == 'Hebb List'][range(n_targets)].mean()
-    Fillers = curves_df[curves_df['type'] == 'Filler List'][range(n_targets)].mean()
-
-    plt.plot(range(1, n_targets+1), Hebbs[range(n_targets)].values, marker='o')
-    plt.xlabel('Serial Position')
-    plt.ylabel('Accuracy')
-    plt.ylim(0, 1.05)
-    plt.title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
-    plt.show()
+Hebbs = curves_df[curves_df['type'] == 'Hebb List'].groupby('cycle')[list(range(n_targets))].mean()
+Fillers = curves_df[curves_df['type'] == 'Filler List'].groupby('cycle')[list(range(n_targets))].mean()
 
 
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
 
-    plt.plot(range(1, n_targets+1), Fillers[range(n_targets)].values, marker='o', color = 'orange')
-    plt.xlabel('Serial Position')
-    plt.ylabel('Accuracy')
-    plt.ylim(0, 1.05)
-    plt.title(f'Filler Lists, serial position curve, {n_simulations} simulations')
-    plt.show()
+# Curves plots: Hebb
+
+colors = plt.cm.Blues(np.linspace(0.3, 1.0, n_cycles))
+
+for c, (cycle, row) in enumerate(Hebbs.iterrows()):
+    ax1.plot(range(1, n_targets + 1), 
+             row.values, 
+             marker='o', 
+             color=colors[c], 
+             label=f'Cycle {cycle + 1}')
+
+ax1.set_xlabel('Serial Position')
+ax1.set_ylabel('Accuracy')
+ax1.set_ylim(0, 1.05)
+ax1.set_title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
+ax1.legend()
 
 
-if diag:
-    import os
-    os.startfile(diag_path)
+# Curves plot: Fillers
+colors = plt.cm.Oranges(np.linspace(0.3, 1.0, n_cycles))
+
+for c, (cycle, row) in enumerate(Fillers.iterrows()):
+    ax2.plot(range(1, n_targets + 1), 
+             row.values, 
+             marker='o', 
+             color=colors[c], 
+             label=f'Cycle {cycle + 1}')
+    
+ax2.set_xlabel('Serial Position')
+ax2.set_ylabel('Accuracy')
+ax2.set_ylim(0, 1.05)
+ax2.set_title(f'Filler Lists, serial position curve, {n_simulations} simulations')
+ax2.legend()
+
+plt.savefig(f'{output_dir}/curves.png')
+plt.close()
+
+
+p = open(f'{output_dir}\\simulation parameters.txt', 'w') # jeżeli drugi argument to 'a' then it appends
+
+p.write(f'SIMULATIONS = {n_simulations}\n\n')
+p.write(f'alpha = {alpha}\n')
+p.write(f'threshold = {threshold}\n')
+p.write(f'decay_rate = {decay_rate}\n')
+p.write(f'decay_slope = {decay_slope}\n')
+
+p.close()
+
+
+if show_snapshot:
+    os.startfile(f'{output_dir}\\snapshot.txt')
+
+if show_plots == 1:
+    os.startfile(f'{output_dir}\\hebb_effect.png')
+    os.startfile(f'{output_dir}\\curves.png')
+elif show_plots == 2:
+    os.startfile(f'{output_dir}\\hebb_effect.png')

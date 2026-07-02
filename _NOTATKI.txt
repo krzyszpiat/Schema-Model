@@ -17,3 +17,6 @@ decay_slope = .8
     - normalizacja dot-products (czy wektorów?) i dostosowanie thresholdu
 
     Decay during retrieval Phase
+
+
+Siła asocjacji itemu z pozycją można spróbować sprawdzić bezpośrednio licząc normę outerproduct itemu z daną pozycją (?)

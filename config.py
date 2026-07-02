@@ -2,8 +2,13 @@
 #        FLAGS
 #########################
 # Collect diagnostics? (1 = yes)
-diag = 1
-diag_path = 'outputs\\snapshot.txt'
+snapshot_on = 1
+
+# Diagnostics detail level (1 = only trials, 2 = + recall/encoding, 3 = everything)
+diag_level = 3
+
+# Save in new folder (0 = overwrite old data)
+save_unique = 0
 
 # Open plots? (1 = yes, 2 = only Hebb effect)
 show_plots = 1
@@ -20,7 +25,7 @@ measure = "dot"
 cat_scope = -1 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
 item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
 
-n_simulations = 100
+n_simulations = 10
 features = 100
 
 n_targets = 8 # number of targets per trial
