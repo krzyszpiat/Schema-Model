@@ -95,6 +95,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                      encoding_strength=np.linalg.norm(outerProduct))
             
             ### DECAY ###
+            # Dodać logowanie informacji
             for d in range(i):
                 # Setting the decay rate for the current item to be decayed
                 effective_rate = decay_rate * (decay_slope ** (i - d))
@@ -103,6 +104,8 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                 encoded_associations[d] *= (1 - effective_rate)
                 associations_strengths[d] *= (1 - effective_rate)
                 m = m - (old_assoc - encoded_associations[d])
+
+                
 
             ###############################
             ### INTER STIMULUS INTERVAL ###
@@ -113,8 +116,8 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                 weakest = None
 
                 ### REFRESHING ###
+                # Dodać logowanie informacji
                 ##  Retrieve the strongest item for each position ##
-                retrieved_inx = None
                 for pos in (range(i + 1)):
                     # Fetch a vector from the weight matrix using current position
                     cand = np.dot(positions[pos],m)
@@ -123,13 +126,24 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                     stren = 0
                     for tar in range(i + 1):
                         red_cand_str = np.dot(cand, targets[tar])
+                        diag.log('test', 
+                            position=pos,
+                            interval_index = i,
+                            red_cand_str = red_cand_str)
                         if red_cand_str > refresh_threshold and red_cand_str > stren:
                             redintegrated = targets[tar]
                             stren = red_cand_str
-                            retrieved_inx = tar
                     # Record the retrieved representation
                     candidates[pos] = {'candidate': redintegrated, 
-                                       'strength': stren}
+                                       'strength': stren,
+                                       'position': pos}
+                    diag.log('test', 
+                            refreshing_cycle = c,
+                            position=pos,
+                            interval_index = i,
+                            red_cand_str = red_cand_str,
+                            selected_position = candidates[pos]['position'],
+                            selected_stren = candidates[pos]['strength'])
 
                 # Select the position with the most decayed representation
                 valid_candidates = {pos: val for pos, val in candidates.items() if val['candidate'] is not None}
@@ -143,7 +157,8 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                             weakest = pos
 
                     # Refresh the weakest representation
-                    gap = 1.0 - associations_strengths[weakest]
+                    asymptote = np.dot(candidates[weakest]['candidate'], candidates[weakest]['candidate'])
+                    gap = max(0.0, 1.0 - weakest_strength / asymptote)
                     refreshing_strength = refresh_rate * gap
 
                     m = m + np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength

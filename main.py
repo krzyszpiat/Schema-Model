@@ -14,12 +14,12 @@ from diagnostics import Diagnostics
 
 
 # Import variables for the script
-from config import *
+from config import *  # noqa: F403
 import config
 cfg = {k: v for k, v in vars(config).items() if not k.startswith('_')}
 
 # Determine the folder for saving outputs
-if save_unique:
+if save_unique:  # noqa: F405
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
     output_dir = f'outputs\\{timestamp}'
 else:
@@ -42,7 +42,7 @@ diag = Diagnostics(level=cfg['diag_level'])
 
 all_results = []
 
-for sim in tqdm(range(n_simulations), desc="Simulations"):
+for sim in tqdm(range(n_simulations), desc="Simulations"):  # noqa: F405
     diag.set_context(simulation=sim + 1)
 
 #######################
@@ -84,9 +84,9 @@ plt.plot(filler_acc.index, filler_acc.values, label='Filler List', marker='o')
 plt.xlabel('Cycle')
 plt.ylabel('Accuracy')
 plt.ylim(0, 1.05)
-plt.xticks(range(1, n_cycles + 1))
+plt.xticks(range(1, n_cycles + 1))  # noqa: F405
 plt.legend()
-plt.title(f'Hebb Lists vs Filler Lists, {n_simulations} simulations')
+plt.title(f'Hebb Lists vs Filler Lists, {n_simulations} simulations')  # noqa: F405
 plt.savefig(f'{output_dir}/hebb_effect.png')
 plt.close()
 
@@ -98,18 +98,18 @@ responses_df = results_df['responses'].apply(pd.Series)
 position_accuracy = (targets_df == responses_df)
 curves_df = pd.concat([results_df, position_accuracy], axis=1)
 
-Hebbs = curves_df[curves_df['type'] == 'Hebb List'].groupby('cycle')[list(range(n_targets))].mean()
-Fillers = curves_df[curves_df['type'] == 'Filler List'].groupby('cycle')[list(range(n_targets))].mean()
+Hebbs = curves_df[curves_df['type'] == 'Hebb List'].groupby('cycle')[list(range(n_targets))].mean()  # noqa: F405
+Fillers = curves_df[curves_df['type'] == 'Filler List'].groupby('cycle')[list(range(n_targets))].mean()  # noqa: F405
 
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
 
 # Curves plots: Hebb
 
-colors = plt.cm.Blues(np.linspace(0.3, 1.0, n_cycles))
+colors = plt.cm.Blues(np.linspace(0.3, 1.0, n_cycles))  # noqa: F405
 
 for c, (cycle, row) in enumerate(Hebbs.iterrows()):
-    ax1.plot(range(1, n_targets + 1), 
+    ax1.plot(range(1, n_targets + 1),  # noqa: F405
              row.values, 
              marker='o', 
              color=colors[c], 
@@ -118,15 +118,15 @@ for c, (cycle, row) in enumerate(Hebbs.iterrows()):
 ax1.set_xlabel('Serial Position')
 ax1.set_ylabel('Accuracy')
 ax1.set_ylim(0, 1.05)
-ax1.set_title(f'Hebb Lists, serial position curve, {n_simulations} simulations')
+ax1.set_title(f'Hebb Lists, serial position curve, {n_simulations} simulations')  # noqa: F405
 ax1.legend()
 
 
 # Curves plot: Fillers
-colors = plt.cm.Oranges(np.linspace(0.3, 1.0, n_cycles))
+colors = plt.cm.Oranges(np.linspace(0.3, 1.0, n_cycles))  # noqa: F405
 
 for c, (cycle, row) in enumerate(Fillers.iterrows()):
-    ax2.plot(range(1, n_targets + 1), 
+    ax2.plot(range(1, n_targets + 1),  # noqa: F405
              row.values, 
              marker='o', 
              color=colors[c], 
@@ -135,7 +135,7 @@ for c, (cycle, row) in enumerate(Fillers.iterrows()):
 ax2.set_xlabel('Serial Position')
 ax2.set_ylabel('Accuracy')
 ax2.set_ylim(0, 1.05)
-ax2.set_title(f'Filler Lists, serial position curve, {n_simulations} simulations')
+ax2.set_title(f'Filler Lists, serial position curve, {n_simulations} simulations')  # noqa: F405
 ax2.legend()
 
 plt.savefig(f'{output_dir}/curves.png')
@@ -144,7 +144,7 @@ plt.close()
 
 p = open(f'{output_dir}\\simulation parameters.txt', 'w') # jeżeli drugi argument to 'a' then it appends
 
-p.write(f'SIMULATIONS = {n_simulations}\n\n')
+p.write(f'SIMULATIONS = {n_simulations}\n\n')  # noqa: F405
 parameters = ['phi',
               'alpha',
               'threshold',
@@ -160,11 +160,11 @@ for par in parameters:
 p.close()
 
 
-if show_snapshot:
+if show_snapshot:  # noqa: F405
     os.startfile(f'{output_dir}\\snapshot.txt')
 
-if show_plots == 1:
+if show_plots == 1:  # noqa: F405
     os.startfile(f'{output_dir}\\hebb_effect.png')
     os.startfile(f'{output_dir}\\curves.png')
-elif show_plots == 2:
+elif show_plots == 2:  # noqa: F405
     os.startfile(f'{output_dir}\\hebb_effect.png')

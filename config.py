@@ -8,10 +8,10 @@ snapshot_on = 1
 diag_level = 3
 
 # Save in new folder (0 = overwrite old data)
-save_unique = 1
+save_unique = 0
 
 # Open plots? (1 = yes, 2 = only Hebb effect)
-show_plots = 1
+show_plots = 0
 # Open snapshot? (1 = yes)
 show_snapshot = 0
 
@@ -27,7 +27,7 @@ item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
 
 positions = "no" # ("no" = non-orthogonal, "o" = orthogonal)
 
-n_simulations = 100
+n_simulations = 1
 features = 100
 
 
