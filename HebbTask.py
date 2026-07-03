@@ -110,6 +110,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
 
             for c in range(n_refreshing_cycles):
                 candidates = {}
+                weakest = None
 
                 ### REFRESHING ###
                 ##  Retrieve the strongest item for each position ##
@@ -134,7 +135,6 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                 valid_candidates = {pos: val for pos, val in candidates.items() if val['candidate'] is not None}
 
                 if valid_candidates:
-                    weakest = None
                     weakest_strength = float('inf')
 
                     for pos in valid_candidates:
@@ -152,7 +152,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                 ### DECAY ###
 
                 for d in range(i):
-                    if not d == weakest: 
+                    if weakest is None or d != weakest: 
                         # Setting the decay rate for the current item to be decayed
                         effective_rate = (decay_rate * (decay_slope ** (i - d))) / n_refreshing_cycles
                         # Anti-Hebbian learning
@@ -160,6 +160,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                         encoded_associations[d] *= (1 - effective_rate)
                         associations_strengths[d] *= (1 - effective_rate)
                         m = m - (old_assoc - encoded_associations[d])
+                        
                         diag.log('decay',
                                 at_position=i,
                                 decayed_position=d,

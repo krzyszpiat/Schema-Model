@@ -145,10 +145,17 @@ plt.close()
 p = open(f'{output_dir}\\simulation parameters.txt', 'w') # jeżeli drugi argument to 'a' then it appends
 
 p.write(f'SIMULATIONS = {n_simulations}\n\n')
-p.write(f'alpha = {alpha}\n')
-p.write(f'threshold = {threshold}\n')
-p.write(f'decay_rate = {decay_rate}\n')
-p.write(f'decay_slope = {decay_slope}\n')
+parameters = ['phi',
+              'alpha',
+              'threshold',
+              'refresh_threshold',
+              'decay_rate',
+              'decay_slope',
+              'n_refreshing_cycles',
+              'refresh_rate']
+
+for par in parameters:
+    p.write(f'{par} = {cfg[par]}\n')
 
 p.close()
 
