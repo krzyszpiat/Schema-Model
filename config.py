@@ -22,15 +22,10 @@ measure = "dot"
 #########################
 #        CONFIG
 #########################
-cat_scope = -1 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
-item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
-
-positions = "no" # ("no" = non-orthogonal, "o" = orthogonal)
-
 n_simulations = 100
+
+
 features = 100
-
-
 n_targets = 8 # number of targets per trial
 n_cycles = 10 # number of learning cycles
 n_fillers = 2 # number of filler trials per cycle
@@ -39,6 +34,15 @@ n_fillers = 2 # number of filler trials per cycle
 n_categories = n_targets * (1 + n_fillers) # number of categories used in experiment
 n_items = n_cycles #number of items per category
 n_trials = n_cycles * (1 + n_fillers)
+
+
+cat_scope = -1 # Scope of category vectors (1 = (0:1), -1 = (-1:1))
+item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
+
+positions = "no" # ("no" = non-orthogonal, "o" = orthogonal)
+
+decay_on = 0 # (1 = on, 0 = off)
+refresh_on = 0 # (1 = on, 0 = off)
 
 #########################
 #    MODEL PARAMETERS

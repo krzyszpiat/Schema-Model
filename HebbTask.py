@@ -17,6 +17,8 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
     n_refreshing_cycles = cfg['n_refreshing_cycles']
     refresh_threshold = cfg['refresh_threshold']
     refresh_rate = cfg['refresh_rate']
+    decay_on   = cfg['decay_on']
+    refresh_on = cfg['refresh_on']
 
     # prepare diagnostics logging
     if snapshot_on:
@@ -99,14 +101,15 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
             #=== DECAY OF THE OLDER ITEMS WHILE NEW ONE IS BEING ENCODED ===#
 
             # Dodać logowanie informacji
-            for d in range(i):
-                # Setting the decay rate for the current item to be decayed
-                effective_rate = decay_rate * (decay_slope ** (i - d))
-                # Anti-Hebbian learning
-                old_assoc = encoded_associations[d].copy()
-                encoded_associations[d] *= (1 - effective_rate)
-                associations_strengths[d] *= (1 - effective_rate)
-                m = m - (old_assoc - encoded_associations[d])
+            if decay_on:
+                for d in range(i):
+                    # Setting the decay rate for the current item to be decayed
+                    effective_rate = decay_rate * (decay_slope ** (i - d))
+                    # Anti-Hebbian learning
+                    old_assoc = encoded_associations[d].copy()
+                    encoded_associations[d] *= (1 - effective_rate)
+                    associations_strengths[d] *= (1 - effective_rate)
+                    m = m - (old_assoc - encoded_associations[d])
 
                 
 
@@ -124,89 +127,91 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                 # -Dodać logowanie informacji
 
                 ##  Retrieve the strongest item for each position ##
-                for pos in (range(i + 1)):
-                    
-                    # Fetch a vector from the weight matrix using current position
-                    cand = np.dot(positions[pos],m)
-                    
-                    # Redintegrate the fetched vector
-                    redintegrated = None
-                    stren = 0
-                    winning = 99
-                    for tar in availble_items: # Loop over candidates that were not redintegrated so far
-                        red_cand_str = np.dot(cand, targets[tar])
+                if refresh_on:
+                    for pos in (range(i + 1)):
+                        
+                        # Fetch a vector from the weight matrix using current position
+                        cand = np.dot(positions[pos],m)
+                        
+                        # Redintegrate the fetched vector
+                        redintegrated = None
+                        stren = 0
+                        winning = 99
+                        for tar in availble_items: # Loop over candidates that were not redintegrated so far
+                            red_cand_str = np.dot(cand, targets[tar])
+
+                            # Diagnostics logging
+                            diag.log('refreshing_redintegration', 
+                                interval_index = i,
+                                refreshing_cycle = c,
+                                position=pos,
+                                candidate_index = tar,
+                                red_cand_str = red_cand_str)
+
+                            # If the target from position tar is above refreshing threshold, choose it as redintegration candidate                      
+                            if red_cand_str > refresh_threshold and red_cand_str > stren:                            
+                                redintegrated = targets[tar]
+                                stren = red_cand_str
+                                winning = tar
+
+                            
+
+                        # Record the redintegrated representation
+                        candidates[pos] = {'candidate': redintegrated, 
+                                        'strength': stren,
+                                        'position': pos,
+                                        'winning': winning}
+
+                        # Discard the selected item from the candidates for redintegration pool
+                        if redintegrated is not None:
+                            availble_items.discard(winning)
 
                         # Diagnostics logging
                         diag.log('refreshing_redintegration', 
-                            interval_index = i,
-                            refreshing_cycle = c,
-                            position=pos,
-                            candidate_index = tar,
-                            red_cand_str = red_cand_str)
-
-                        # If the target from position tar is above refreshing threshold, choose it as redintegration candidate                      
-                        if red_cand_str > refresh_threshold and red_cand_str > stren:                            
-                            redintegrated = targets[tar]
-                            stren = red_cand_str
-                            winning = tar
-
-                        
-
-                    # Record the redintegrated representation
-                    candidates[pos] = {'candidate': redintegrated, 
-                                       'strength': stren,
-                                       'position': pos,
-                                       'winning': winning}
-
-                    # Discard the selected item from the candidates for redintegration pool
-                    if redintegrated is not None:
-                        availble_items.discard(winning)
-
-                    # Diagnostics logging
-                    diag.log('refreshing_redintegration', 
-                            refreshing_cycle = c,
-                            position=pos,
-                            interval_index = i,
-                            winning = winning,
-                            selected_stren = candidates[pos]['strength'])
+                                refreshing_cycle = c,
+                                position=pos,
+                                interval_index = i,
+                                winning = winning,
+                                selected_stren = candidates[pos]['strength'])
 
 
-                # Select the position with the most decayed representation
-                valid_candidates = {pos: val for pos, val in candidates.items() if val['candidate'] is not None}
+                    # Select the position with the most decayed representation
+                    valid_candidates = {pos: val for pos, val in candidates.items() if val['candidate'] is not None}
 
-                if valid_candidates:
-                    weakest_strength = float('inf')
+                    if valid_candidates:
+                        weakest_strength = float('inf')
 
-                    for pos in valid_candidates:
-                        if valid_candidates[pos]['strength'] < weakest_strength:
-                            weakest_strength = candidates[pos]['strength']
-                            weakest = pos
+                        for pos in valid_candidates:
+                            if valid_candidates[pos]['strength'] < weakest_strength:
+                                weakest_strength = candidates[pos]['strength']
+                                weakest = pos
 
-                    # Refresh the weakest representation
-                    asymptote = np.dot(candidates[weakest]['candidate'], candidates[weakest]['candidate'])
-                    gap = max(0.0, 1.0 - weakest_strength / asymptote)
-                    refreshing_strength = refresh_rate * gap
+                        # Refresh the weakest representation
+                        asymptote = np.dot(candidates[weakest]['candidate'], candidates[weakest]['candidate'])
+                        gap = max(0.0, 1.0 - weakest_strength / asymptote)
+                        refreshing_strength = refresh_rate * gap
 
-                    m = m + np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
-                    associations_strengths[weakest] += refreshing_strength
+                        m = m + np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
+                        associations_strengths[weakest] += refreshing_strength
 
                 #=== DECAY ===#
 
-                for d in range(i):
-                    if weakest is None or d != weakest: 
-                        # Setting the decay rate for the current item to be decayed
-                        effective_rate = (decay_rate * (decay_slope ** (i - d))) / n_refreshing_cycles
-                        # Anti-Hebbian learning
-                        old_assoc = encoded_associations[d].copy()
-                        encoded_associations[d] *= (1 - effective_rate)
-                        associations_strengths[d] *= (1 - effective_rate)
-                        m = m - (old_assoc - encoded_associations[d])
-                        
-                        diag.log('decay',
-                                at_position=i,
-                                decayed_position=d,
-                                effective_rate=effective_rate,
-                                strength_after=np.linalg.norm(encoded_associations[d])) 
+                if decay_on:
+                    for d in range(i):
+                        if weakest is None or d != weakest: 
+                            # Setting the decay rate for the current item to be decayed
+                            effective_rate = (decay_rate * (decay_slope ** (i - d))) / n_refreshing_cycles
+                            # Anti-Hebbian learning
+                            old_assoc = encoded_associations[d].copy()
+                            encoded_associations[d] *= (1 - effective_rate)
+                            associations_strengths[d] *= (1 - effective_rate)
+                            m = m - (old_assoc - encoded_associations[d])
+                            
+                            diag.log('decay',
+                                    at_position=i,
+                                    decayed_position=d,
+                                    effective_rate=effective_rate,
+                                    strength_after=np.linalg.norm(encoded_associations[d])) 
 
         ##################
         # Retrieval Phase
