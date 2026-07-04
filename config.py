@@ -27,7 +27,7 @@ item_scope = -1 # Scope of item vectors (1 = (0:1), -1 = (-1:1))
 
 positions = "no" # ("no" = non-orthogonal, "o" = orthogonal)
 
-n_simulations = 50
+n_simulations = 100
 features = 100
 
 
