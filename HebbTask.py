@@ -75,13 +75,15 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
             ###########################
 
 
-            ### ENCODING THE CURRENT ITEM ###
+            #=== ENCODING THE CURRENT ITEM ===#
 
             # Select category to be encoded on the current position
             cur_cat = cat_seq[i]
+
             # Select the item to be encoded from the selected category
             cur_item = items[(cur_cat, cycle_index)]# this line can be hardcoded to cur_item = items[(cur_cat,0)] and simulate standard Hebb
             targets.append(cur_item)
+
             # Associate the current target with the active serial position
             outerProduct = np.outer(positions[i], cur_item)
             encoded_associations.append(outerProduct)
@@ -94,7 +96,8 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                      item_index=cycle_index,
                      encoding_strength=np.linalg.norm(outerProduct))
             
-            ### DECAY ###
+            #=== DECAY OF THE OLDER ITEMS WHILE NEW ONE IS BEING ENCODED ===#
+
             # Dodać logowanie informacji
             for d in range(i):
                 # Setting the decay rate for the current item to be decayed
@@ -114,46 +117,59 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
             for c in range(n_refreshing_cycles):
                 candidates = {}
                 weakest = None
+                availble_items = set(range(i+1))
 
-                ### REFRESHING ###
-                # Dodać logowanie informacji
+
+                #=== REFRESHING ===#
+                # -Dodać logowanie informacji
+
                 ##  Retrieve the strongest item for each position ##
                 for pos in (range(i + 1)):
+                    
                     # Fetch a vector from the weight matrix using current position
                     cand = np.dot(positions[pos],m)
+                    
                     # Redintegrate the fetched vector
                     redintegrated = None
                     stren = 0
                     winning = 99
-                    for tar in range(i + 1):
+                    for tar in availble_items: # Loop over candidates that were not redintegrated so far
                         red_cand_str = np.dot(cand, targets[tar])
 
+                        # Diagnostics logging
                         diag.log('refreshing_redintegration', 
                             interval_index = i,
                             refreshing_cycle = c,
                             position=pos,
                             candidate_index = tar,
                             red_cand_str = red_cand_str)
-                                              
-                        if red_cand_str > refresh_threshold and red_cand_str > stren:
+
+                        # If the target from position tar is above refreshing threshold, choose it as redintegration candidate                      
+                        if red_cand_str > refresh_threshold and red_cand_str > stren:                            
                             redintegrated = targets[tar]
                             stren = red_cand_str
                             winning = tar
 
-                    # Record the retrieved representation
+                        
+
+                    # Record the redintegrated representation
                     candidates[pos] = {'candidate': redintegrated, 
                                        'strength': stren,
-                                       'position': pos}
+                                       'position': pos,
+                                       'winning': winning}
 
+                    # Discard the selected item from the candidates for redintegration pool
+                    if redintegrated is not None:
+                        availble_items.discard(winning)
+
+                    # Diagnostics logging
                     diag.log('refreshing_redintegration', 
                             refreshing_cycle = c,
                             position=pos,
                             interval_index = i,
-                            #selected_position = candidates[pos]['position'],
-                                # add info about the index of the winning item
-                                # (candidate_index?)
                             winning = winning,
                             selected_stren = candidates[pos]['strength'])
+
 
                 # Select the position with the most decayed representation
                 valid_candidates = {pos: val for pos, val in candidates.items() if val['candidate'] is not None}
@@ -174,7 +190,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                     m = m + np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
                     associations_strengths[weakest] += refreshing_strength
 
-                ### DECAY ###
+                #=== DECAY ===#
 
                 for d in range(i):
                     if weakest is None or d != weakest: 
