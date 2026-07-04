@@ -8,7 +8,7 @@ snapshot_on = 1
 diag_level = 3
 
 # Save in new folder (0 = overwrite old data)
-save_unique = 0
+save_unique = 1
 
 # Open plots? (1 = yes, 2 = only Hebb effect)
 show_plots = 1
@@ -22,7 +22,7 @@ measure = "dot"
 #########################
 #        CONFIG
 #########################
-n_simulations = 100
+n_simulations = 1000
 
 
 features = 100
@@ -49,7 +49,7 @@ refresh_on = 1 # (1 = on, 0 = off)
 #########################
 phi = .366
 alpha = .5
-threshold = 5
+threshold = 12
 refresh_threshold = threshold
 decay_rate = .6 # set to 0 to disable decay
 decay_slope = .8

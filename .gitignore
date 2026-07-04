@@ -1,12 +1,13 @@
+*png
+*.Rproj
+*.csv
+
 __pycache__/
 .claude/
 
-/outputs
+outputs/*
+!hebb_effect.png
 
-
-*.png
-*.Rproj
-*.csv
 
 .Rproj.user/
 .Rhistory
