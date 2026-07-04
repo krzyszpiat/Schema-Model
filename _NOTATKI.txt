@@ -1,24 +1,15 @@
 NOTATKI
 
-Sensowne parametry:
-
-alpha = .4
-threshold = 5 
-decay_rate = .8 
-decay_slope = .8
-
-
 - W tym momencie zeruję weight matrix na początku bloku. 
     - Można też resetować na początku każdego trialu, wtedy każda lista ma swoje własne pozycje seryjne
         - Można wtedy rozważyć mechanizm wydobywania macierzy przy udziale awareness
 
-- Decay:
-    - dodać asymptotę
-    - normalizacja dot-products (czy wektorów?) i dostosowanie thresholdu
-
-    Decay during retrieval Phase
 
 
-Siła asocjacji itemu z pozycją można spróbować sprawdzić bezpośrednio licząc normę outerproduct itemu z daną pozycją (?)
 
-Znormalizować stren?
+Kiedy decay jest zbyt duży to późniejsze pozycje pokonują pozycje wcześniejsze podczas redintegracji na potrzeby wyboru kandydatów do odświeżania na danej pozycji
+
+
+Implementacja konkurencji podczas redintegracji przy odświeżaniu:
+- jeżeli item zostanie zredintegrowany raz, zostaje wykluczony z listy kandydatów podczas kolejnej redintegracji
+- można ten proces usubtelnić mocno obniżając jego siłę zamiast całkowicie ją zerować

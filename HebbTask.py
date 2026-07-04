@@ -123,7 +123,8 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                     cand = np.dot(positions[pos],m)
                     # Redintegrate the fetched vector
                     redintegrated = None
-                    stren = 0 # ZAINICJOWAĆ WEWNĄTRZ PĘTLI PONIŻEJ
+                    stren = 0
+                    winning = 99
                     for tar in range(i + 1):
                         red_cand_str = np.dot(cand, targets[tar])
 
@@ -133,17 +134,17 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                             position=pos,
                             candidate_index = tar,
                             red_cand_str = red_cand_str)
-                        
-                        winning = 99
-
+                                              
                         if red_cand_str > refresh_threshold and red_cand_str > stren:
                             redintegrated = targets[tar]
                             stren = red_cand_str
                             winning = tar
+
                     # Record the retrieved representation
                     candidates[pos] = {'candidate': redintegrated, 
                                        'strength': stren,
                                        'position': pos}
+
                     diag.log('refreshing_redintegration', 
                             refreshing_cycle = c,
                             position=pos,
