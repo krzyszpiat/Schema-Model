@@ -28,6 +28,7 @@ Model simulates the process of incidental schema learning in the Hebb repetition
   * Each position retrieves a representation
   * Retrieved representation is redintagrated into one of the targets
     * Retrieval of incorrect items allowed
+    * No target can be retrieved twice
   * Strength of association between positions and redintegrated items probed
   * Position with weakest strength (but above threshold) selected for refreshing
   * Redintegrated item re-encoded to the selected position
