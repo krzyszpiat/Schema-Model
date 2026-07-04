@@ -35,6 +35,8 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 
 ## What the model does so far
 
+![](outputs/hebb_effect.png)
+
 * Simulate benefit of the Hebb lists over Filler lists
   * Purely through superposition! No additional mechanisms required
 * Simulate recency effect (sometimes)
