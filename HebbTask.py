@@ -123,26 +123,35 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                     cand = np.dot(positions[pos],m)
                     # Redintegrate the fetched vector
                     redintegrated = None
-                    stren = 0
+                    stren = 0 # ZAINICJOWAĆ WEWNĄTRZ PĘTLI PONIŻEJ
                     for tar in range(i + 1):
                         red_cand_str = np.dot(cand, targets[tar])
-                        diag.log('test', 
-                            position=pos,
+
+                        diag.log('refreshing_redintegration', 
                             interval_index = i,
+                            refreshing_cycle = c,
+                            position=pos,
+                            candidate_index = tar,
                             red_cand_str = red_cand_str)
+                        
+                        winning = 99
+
                         if red_cand_str > refresh_threshold and red_cand_str > stren:
                             redintegrated = targets[tar]
                             stren = red_cand_str
+                            winning = tar
                     # Record the retrieved representation
                     candidates[pos] = {'candidate': redintegrated, 
                                        'strength': stren,
                                        'position': pos}
-                    diag.log('test', 
+                    diag.log('refreshing_redintegration', 
                             refreshing_cycle = c,
                             position=pos,
                             interval_index = i,
-                            red_cand_str = red_cand_str,
-                            selected_position = candidates[pos]['position'],
+                            #selected_position = candidates[pos]['position'],
+                                # add info about the index of the winning item
+                                # (candidate_index?)
+                            winning = winning,
                             selected_stren = candidates[pos]['strength'])
 
                 # Select the position with the most decayed representation
