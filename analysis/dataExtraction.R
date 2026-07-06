@@ -16,7 +16,21 @@ exp2 <- table |>
     CRESP = trialTestButtons.CRESP.Trial.,
     RESP = trialTestButtons.RESP.Trial.,
     AwarenessClosed = AwarenessCheck2.RESP
-  ) |> 
+  )
+
+
+exp <- table |> 
+  select(
+    Subject, 
+    Block = BlckNo,
+    Cycle = HebbCycle.Trial.,
+    Trial,
+    List = ListType.Trial.,
+    CRESP = trialTestButtons.CRESP.Trial.,
+    RESP = trialTestButtons.RESP.Trial.
+  )
+
+  exp1a <- exp |> 
   filter(
     Block != 99,
     !is.na(Cycle)
@@ -30,4 +44,7 @@ exp2 <- table |>
     into = paste0("RESP", 1:8), 
     sep = "}")
   
-saveRDS(exp2, "analysis/empiricalData/Exp2.RDS")
+saveRDS(exp1a, "analysis/empiricalData/Exp1a.RDS")
+
+exp1a <- exp1a |> 
+  filter(List %in% c("Hebb", "Random"))

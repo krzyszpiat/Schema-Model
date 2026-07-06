@@ -6,6 +6,8 @@ library(tidyr)
 library(ggplot2)
 
 exp2 <- readRDS("analysis/empiricalData/Exp2.RDS")
+exp1b <- readRDS("analysis/empiricalData/Exp1b.RDS")
+exp1a <- readRDS("analysis/empiricalData/Exp1a.RDS")
 
 makePlot <- function(input, title){
 
@@ -78,6 +80,12 @@ exp2n <- exp2 |> filter(AwarenessClosed == "n")
 plot2 <- makePlot(exp2a, "Exp2, aware participants")
 plot3 <- makePlot(exp2n, "Exp2, non-aware participants")
 
+plot4 <- makePlot(exp1b, "Exp1b")
+plot5 <- makePlot(exp1a, "Exp1a")
+
 ggsave("analysis/Exp2_Full.png", plot1, width = 8, height = 5, dpi = 300)
 ggsave("analysis/Exp2_Aware.png", plot2, width = 8, height = 5, dpi = 300)
 ggsave("analysis/Exp2_NonAware.png",   plot3,   width = 8, height = 5, dpi = 300)
+
+ggsave("analysis/Exp1b.png",   plot4,   width = 8, height = 5, dpi = 300)
+ggsave("analysis/Exp1a.png",   plot5,   width = 8, height = 5, dpi = 300)

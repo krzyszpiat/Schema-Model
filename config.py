@@ -5,7 +5,7 @@
 snapshot_on = 1
 
 # Diagnostics detail level (1 = only trials, 2 = + recall/encoding, 3 = everything)
-diag_level = 3
+diag_level = 0
 
 # Save in new folder (0 = overwrite old data)
 save_unique = 1
@@ -22,7 +22,7 @@ measure = "dot"
 #########################
 #        CONFIG
 #########################
-n_simulations = 1000
+n_simulations = 100
 
 
 features = 100
@@ -49,9 +49,9 @@ refresh_on = 1 # (1 = on, 0 = off)
 #########################
 phi = .366
 alpha = .5
-threshold = 12
+threshold = 40
 refresh_threshold = threshold
-decay_rate = .6 # set to 0 to disable decay
-decay_slope = .8
+decay_rate = .5 # set to 0 to disable decay
+decay_slope = .5
 n_refreshing_cycles = 10
-refresh_rate = .9
+refresh_rate = .8
