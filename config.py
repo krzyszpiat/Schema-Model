@@ -27,7 +27,7 @@ n_simulations = 100
 
 features = 100
 n_targets = 8 # number of targets per trial
-n_cycles = 10 # number of learning cycles
+n_cycles = 1 # number of learning cycles
 n_fillers = 2 # number of filler trials per cycle
 
 
@@ -49,9 +49,9 @@ refresh_on = 1 # (1 = on, 0 = off)
 #########################
 phi = .366
 alpha = .5
-threshold = 40
+threshold = 25
 refresh_threshold = threshold
-decay_rate = .5 # set to 0 to disable decay
-decay_slope = .5
+decay_rate = .1 # set to 0 to disable decay 
+decay_slope = .1
 n_refreshing_cycles = 10
-refresh_rate = .8
+refresh_rate = 0

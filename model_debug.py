@@ -15,5 +15,5 @@ items      = itemGeneration(cfg, categories)
 diag = Diagnostics(level=cfg['diag_level'])
 diag.set_context(simulation=1)
 
-results = HebbParadigm(cfg, items, positions, 'outputs/debug', diag)
-diag.save('outputs/debug')
+results = HebbParadigm(cfg, items, positions, 'outputs/testing/debug', diag)
+diag.save('outputs/testing/debug')
