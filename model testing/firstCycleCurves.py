@@ -21,10 +21,10 @@ cfg['n_trials'] = cfg['n_cycles'] * (1 + cfg['n_fillers'])
 
 # PARAMETERS
 param_grid = {
-    'threshold': [10,25,50],
-    'decay_rate': [round(x, 1) for x in np.linspace(0, 1, 11)],
-    'decay_slope': [round(x, 1) for x in np.linspace(0, 1, 11)],
-    'refresh_rate': [round(x, 1) for x in np.linspace(0, 1, 11)]
+    'threshold': [20,30,40,50,60,70],
+    'decay_rate': [round(x, 1) for x in np.linspace(0.1, 0.9, 9)],
+    'decay_slope': [round(x, 1) for x in np.linspace(0.1, 0.9, 9)], # chyba powyżej 0.5 nie ma sensu
+    'refresh_rate': [round(x, 1) for x in np.linspace(0.1, 0.9, 9)]
 }
 
 param_names = list(param_grid.keys())
@@ -35,8 +35,6 @@ sims = 100
 # Start estimating
 all_results = []
 diag = Diagnostics(enabled=False)
-
-
 
 
 for comb in tqdm(param_combinations, desc="Overall progress", position=0):

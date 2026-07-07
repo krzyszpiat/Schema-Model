@@ -13,3 +13,7 @@ Kiedy decay jest zbyt duży to późniejsze pozycje pokonują pozycje wcześniej
 Implementacja konkurencji podczas redintegracji przy odświeżaniu:
 - jeżeli item zostanie zredintegrowany raz, zostaje wykluczony z listy kandydatów podczas kolejnej redintegracji
 - można ten proces usubtelnić mocno obniżając jego siłę zamiast całkowicie ją zerować
+
+Pierwsza symulacja:
+- Threshold poniżej 25 nie ma sensu (przy 50 najlepsze efekty)
+- Zbyt wysoki decay_slope = wypada wszystko poza recent
