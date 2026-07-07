@@ -174,9 +174,10 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                         gap = max(0.0, 1.0 - weakest_strength / asymptote)
                         refreshing_strength = refresh_rate * gap
 
-                        m = m + np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
-                        #associations_strengths[weakest] += refreshing_strength
-
+                        boost = np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
+                        m = m + boost
+                        encoded_associations[weakest] += boost
+                        
                 #=== DECAY ===#
 
                 if decay_on:

@@ -8,7 +8,7 @@ snapshot_on = 0
 diag_level = 0
 
 # Save in new folder (0 = overwrite old data)
-save_unique = 1
+save_unique = 0
 
 # Open plots? (1 = yes, 2 = only Hebb effect)
 show_plots = 1
@@ -57,3 +57,5 @@ refresh_threshold = 15 # try to define it as a fraction of the retrieval thresho
 decay_rate = .9 
 decay_slope = .4
 refresh_rate = .5
+
+decay_asymptote = .05
