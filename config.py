@@ -2,10 +2,10 @@
 #        FLAGS
 #########################
 # Collect diagnostics? (1 = yes)
-snapshot_on = 1
+snapshot_on = 0
 
 # Diagnostics detail level (1 = only trials, 2 = + recall/encoding, 3 = everything)
-diag_level = 3
+diag_level = 0
 
 # Save in new folder (0 = overwrite old data)
 save_unique = 1
@@ -26,6 +26,9 @@ n_simulations = 100
 
 
 features = 100
+n_refreshing_cycles = 10
+
+
 n_targets = 8 # number of targets per trial
 n_cycles = 10 # number of learning cycles
 n_fillers = 2 # number of filler trials per cycle
@@ -49,9 +52,8 @@ refresh_on = 1 # (1 = on, 0 = off)
 #########################
 phi = .366
 alpha = .5
-threshold = 40
-refresh_threshold = threshold
-decay_rate = .7 # set to 0 to disable decay 
+threshold = 40 # change the name to retrieval_threshold
+refresh_threshold = 20 # try to define it as a fraction of the retrieval threshold
+decay_rate = .7 
 decay_slope = .5
-n_refreshing_cycles = 10
 refresh_rate = .9

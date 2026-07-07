@@ -66,7 +66,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
         ################# 
 
         encoded_associations = []
-        associations_strengths = []
+        #associations_strengths = []
         targets = []
 
 
@@ -89,14 +89,10 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
             # Associate the current target with the active serial position
             outerProduct = np.outer(positions[i], cur_item)
             encoded_associations.append(outerProduct)
-            associations_strengths.append(1.0)
+            #associations_strengths.append(1.0)
             m = m + outerProduct
             
-            diag.log('encoding',
-                     position=i,
-                     category=cur_cat,
-                     item_index=cycle_index,
-                     encoding_strength=np.linalg.norm(outerProduct))
+            diag.log('encoding', position=i, category=cur_cat, item_index=cycle_index, encoding_strength=np.linalg.norm(outerProduct))
             
             #=== DECAY OF THE OLDER ITEMS WHILE NEW ONE IS BEING ENCODED ===#
 
@@ -108,7 +104,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                     # Anti-Hebbian learning
                     old_assoc = encoded_associations[d].copy()
                     encoded_associations[d] *= (1 - effective_rate)
-                    associations_strengths[d] *= (1 - effective_rate)
+                    #associations_strengths[d] *= (1 - effective_rate)
                     m = m - (old_assoc - encoded_associations[d])
 
                 
@@ -141,12 +137,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                             red_cand_str = np.dot(cand, targets[tar])
 
                             # Diagnostics logging
-                            diag.log('refreshing_redintegration', 
-                                interval_index = i,
-                                refreshing_cycle = c,
-                                position=pos,
-                                candidate_index = tar,
-                                red_cand_str = red_cand_str)
+                            diag.log('refreshing_redintegration', interval_index = i, refreshing_cycle = c, position=pos, candidate_index = tar, red_cand_str = red_cand_str)
 
                             # If the target from position tar is above refreshing threshold, choose it as redintegration candidate                      
                             if red_cand_str > refresh_threshold and red_cand_str > stren:                            
@@ -157,22 +148,14 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                             
 
                         # Record the redintegrated representation
-                        candidates[pos] = {'candidate': redintegrated, 
-                                        'strength': stren,
-                                        'position': pos,
-                                        'winning': winning}
+                        candidates[pos] = {'candidate': redintegrated, 'strength': stren, 'position': pos, 'winning': winning}
 
                         # Discard the selected item from the candidates for redintegration pool
                         if redintegrated is not None:
                             availble_items.discard(winning)
 
                         # Diagnostics logging
-                        diag.log('refreshing_redintegration', 
-                                refreshing_cycle = c,
-                                position=pos,
-                                interval_index = i,
-                                winning = winning,
-                                selected_stren = candidates[pos]['strength'])
+                        diag.log('refreshing_redintegration', refreshing_cycle = c, position=pos, interval_index = i, winning = winning, selected_stren = candidates[pos]['strength'])
 
 
                     # Select the position with the most decayed representation
@@ -192,7 +175,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                         refreshing_strength = refresh_rate * gap
 
                         m = m + np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
-                        associations_strengths[weakest] += refreshing_strength
+                        #associations_strengths[weakest] += refreshing_strength
 
                 #=== DECAY ===#
 
@@ -204,14 +187,10 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                             # Anti-Hebbian learning
                             old_assoc = encoded_associations[d].copy()
                             encoded_associations[d] *= (1 - effective_rate)
-                            associations_strengths[d] *= (1 - effective_rate)
+                            #associations_strengths[d] *= (1 - effective_rate)
                             m = m - (old_assoc - encoded_associations[d])
                             
-                            diag.log('decay',
-                                    at_position=i,
-                                    decayed_position=d,
-                                    effective_rate=effective_rate,
-                                    strength_after=np.linalg.norm(encoded_associations[d])) 
+                            diag.log('decay', at_position=i, decayed_position=d, effective_rate=effective_rate, strength_after=np.linalg.norm(encoded_associations[d])) 
 
         ##################
         # Retrieval Phase

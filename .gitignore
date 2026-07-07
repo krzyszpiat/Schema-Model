@@ -5,6 +5,7 @@
 __pycache__/
 .claude/
 _claude_generated/
+.vscode/
 
 outputs/*
 !hebb_effect.png

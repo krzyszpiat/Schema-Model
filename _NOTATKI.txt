@@ -17,3 +17,7 @@ Implementacja konkurencji podczas redintegracji przy odświeżaniu:
 Pierwsza symulacja:
 - Threshold poniżej 25 nie ma sensu (przy 50 najlepsze efekty)
 - Zbyt wysoki decay_slope = wypada wszystko poza recent
+
+
+POTENCJALNE PROBLEMY Z REDINTEGROWANIEM ITEMÓW PODCZAS WYBIERANIA REFRESHING CANDIDATES
+- zbyt wysoki refreshing_threshold? (spróbować ustawić na połowę threshold)?

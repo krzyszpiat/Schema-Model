@@ -21,10 +21,11 @@ cfg['n_trials'] = cfg['n_cycles'] * (1 + cfg['n_fillers'])
 
 # PARAMETERS
 param_grid = {
-    'threshold': [20,30,40,50,60,70],
-    'decay_rate': [round(x, 1) for x in np.linspace(0.1, 0.9, 9)],
-    'decay_slope': [round(x, 1) for x in np.linspace(0.1, 0.9, 9)], # chyba powyżej 0.5 nie ma sensu
-    'refresh_rate': [round(x, 1) for x in np.linspace(0.1, 0.9, 9)]
+    'threshold': [20,30,40],
+    'refresh_threshold': [0,5,10,15,20,25],
+    'decay_rate': [round(x, 1) for x in np.linspace(0.5, 0.9, 5)],
+    'decay_slope': [round(x, 1) for x in np.linspace(0.3, 0.7, 5)],
+    'refresh_rate': [round(x, 1) for x in np.linspace(0.3, 0.9, 4)]
 }
 
 param_names = list(param_grid.keys())
