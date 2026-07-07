@@ -12,8 +12,9 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 * **decay\_slope** (0-1): shape of the decay function, the higher the faster initial decay
 * **n\_refreshing\_cycles**: number of refreshing episodes in each inter-stimulus-interval
 * **refresh_rate** (0-1): amount of activation restored in each refreshing cycle
+* **decay_asymptote** (0-1): how much of an item is encoded permamently on a serial position and is thus protected from decay 
 
-#### Best parameters to fit the serial curves in the first cycle
+#### Current best parameters to fit the serial curves in the first cycle
 - threshold = 40 
 - refresh_threshold = 15
 - decay_rate = .9 
@@ -31,7 +32,7 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 * Decay mechanism
   * Simulated through anti-Hebbian learning of the item-position associations
   * Exponential decay curve
-  * Decay asymptote at 0
+  * Decay asymptote regulated by a free parameter
 * Refreshing
   * Each position retrieves a representation
   * Retrieved representation is redintagrated into one of the targets
@@ -47,15 +48,14 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 
 * Simulate benefit of the Hebb lists over Filler lists
   * Purely through superposition! No additional mechanisms required
-* Simulate recency effect (sometimes)
-* Simulate primacy effect (reliably)
+  * Both on the level of trial-accuracy and on the level of serial position curves' shapes
+
 
 ## What the model does poorly
 
-* Performance in the filler lists goes down instead of staying relatively constant
-* Hebb lists are protected from this fall rather than going up
-* Items do not decay beyond the scope of the current trial
-  * i.e. activation of the last items is not decreasing as much as the activation of the first items
+* Doesn't simulate the impact of awareness on learning
+* Currently simulates only performance in the serial reconstruction test 
+  * The model is yet to be adapted to the serial recall test
 
 ## What needs to be implemented
 
