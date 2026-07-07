@@ -19,6 +19,7 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
     refresh_rate = cfg['refresh_rate']
     decay_on   = cfg['decay_on']
     refresh_on = cfg['refresh_on']
+    decay_asymptote = cfg['decay_asymptote']
 
     # prepare diagnostics logging
     if snapshot_on:
@@ -101,10 +102,11 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                 for d in range(i):
                     # Setting the decay rate for the current item to be decayed
                     effective_rate = decay_rate * (decay_slope ** (i - d))
+                    # Setting the decay asymptote for the current position-item pair
+                    decay_floor = decay_asymptote * np.outer(positions[d], targets[d])
                     # Anti-Hebbian learning
                     old_assoc = encoded_associations[d].copy()
-                    encoded_associations[d] *= (1 - effective_rate)
-                    #associations_strengths[d] *= (1 - effective_rate)
+                    encoded_associations[d] = decay_floor + (encoded_associations[d] - decay_floor) * (1 - effective_rate)
                     m = m - (old_assoc - encoded_associations[d])
 
                 
@@ -170,8 +172,8 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                                 weakest = pos
 
                         # Refresh the weakest representation
-                        asymptote = np.dot(candidates[weakest]['candidate'], candidates[weakest]['candidate'])
-                        gap = max(0.0, 1.0 - weakest_strength / asymptote)
+                        refresh_asymptote = np.dot(candidates[weakest]['candidate'], candidates[weakest]['candidate'])
+                        gap = max(0.0, 1.0 - weakest_strength / refresh_asymptote)
                         refreshing_strength = refresh_rate * gap
 
                         boost = np.outer(positions[weakest], candidates[weakest]['candidate']) * refreshing_strength
@@ -185,10 +187,13 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
                         if weakest is None or d != weakest: 
                             # Setting the decay rate for the current item to be decayed
                             effective_rate = (decay_rate * (decay_slope ** (i - d))) / n_refreshing_cycles
+
+                            # Setting the decay asymptote for the current position-item pair
+                            decay_floor = decay_asymptote * np.outer(positions[d], targets[d])
+
                             # Anti-Hebbian learning
                             old_assoc = encoded_associations[d].copy()
-                            encoded_associations[d] *= (1 - effective_rate)
-                            #associations_strengths[d] *= (1 - effective_rate)
+                            encoded_associations[d] = decay_floor + (encoded_associations[d] - decay_floor) * (1 - effective_rate)
                             m = m - (old_assoc - encoded_associations[d])
                             
                             diag.log('decay', at_position=i, decayed_position=d, effective_rate=effective_rate, strength_after=np.linalg.norm(encoded_associations[d])) 
