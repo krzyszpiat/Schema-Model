@@ -285,7 +285,15 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
             'accuracy': accuracy,
             'targets': cat_seq,
             'responses': recalled_items})
-        
+
+        # Post-recall decay
+     
+        for item in range(n_targets):
+            decay_floor = decay_asymptote * np.outer(positions[item], targets[item])
+            delta = encoded_associations[item] - decay_floor
+            m = m - delta
+
+
         log_msg('\n')
         log_msg('*' * 30)
         log_msg(f'TRIAL {t+1} PERFORMANCE: {accuracy}')
