@@ -53,7 +53,7 @@ refresh_on = 1 # (1 = on, 0 = off)
 phi = .366
 alpha = .5
 threshold = 40 # change the name to retrieval_threshold
-refresh_threshold = 20 # try to define it as a fraction of the retrieval threshold
-decay_rate = .7 
-decay_slope = .5
-refresh_rate = .9
+refresh_threshold = 15 # try to define it as a fraction of the retrieval threshold
+decay_rate = .9 
+decay_slope = .4
+refresh_rate = .5

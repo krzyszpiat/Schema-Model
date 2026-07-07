@@ -13,6 +13,14 @@ Model simulates the process of incidental schema learning in the Hebb repetition
 * **n\_refreshing\_cycles**: number of refreshing episodes in each inter-stimulus-interval
 * **refresh_rate** (0-1): amount of activation restored in each refreshing cycle
 
+#### Best parameters to fit the serial curves in the first cycle
+threshold = 40 
+refresh_threshold = 15
+decay_rate = .9 
+decay_slope = .4
+refresh_rate = .5
+
+
 ## Mechanisms implemented so far
 
 * Fully functional Hebb paradigm with serial reconstruction test
