@@ -62,7 +62,7 @@ fits <- sim_filler |>
 write.csv(fits, "outputs/testing/firstCycle/fit_ranking.csv", row.names = FALSE)
 
 # --- 4. Plot A: top-N best-fitting curves vs empirical -----------------------
-N <- 12
+N <- 10
 top_combos <- head(fits, N) |>
     mutate(combo = sprintf("thr=%g ref_thr=%g dr=%g ds=%g rr=%g (RMSE=%.3f)",
                            threshold, refresh_threshold, decay_rate, decay_slope, refresh_rate, RMSE))
@@ -120,8 +120,12 @@ gridplot(fits, refresh_threshold, refresh_rate)
 grid20 <- gridplot(fits |> filter(threshold == 20), refresh_threshold, refresh_rate)
 grid30 <- gridplot(fits |> filter(threshold == 30), refresh_threshold, refresh_rate)
 grid40 <- gridplot(fits |> filter(threshold == 40), refresh_threshold, refresh_rate)
+grid50 <- gridplot(fits |> filter(threshold == 50), refresh_threshold, refresh_rate)
+grid60 <- gridplot(fits |> filter(threshold == 60), refresh_threshold, refresh_rate)
 
 
 ggsave("outputs/testing/firstCycle/fit_rmse_threshold20.png", grid20, width = 14, height = 9, dpi = 200)
 ggsave("outputs/testing/firstCycle/fit_rmse_threshold30.png", grid30, width = 14, height = 9, dpi = 200)
 ggsave("outputs/testing/firstCycle/fit_rmse_threshold40.png", grid40, width = 14, height = 9, dpi = 200)
+ggsave("outputs/testing/firstCycle/fit_rmse_threshold50.png", grid50, width = 14, height = 9, dpi = 200)
+ggsave("outputs/testing/firstCycle/fit_rmse_threshold60.png", grid60, width = 14, height = 9, dpi = 200)
