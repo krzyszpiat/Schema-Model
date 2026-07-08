@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 from utils import cosim
+from stimuliGeneration import positionGeneration
 
-def HebbParadigm(cfg, items, positions, output_dir, diag):
+def HebbParadigm(cfg, items, output_dir, diag):
 
     n_targets = cfg['n_targets'] 
     n_cycles = cfg['n_cycles']
@@ -58,6 +59,9 @@ def HebbParadigm(cfg, items, positions, output_dir, diag):
         elif trial_type == "H":
             cat_seq = selection
             condition = "Hebb List"
+
+        # creating positions' representations for the current trial
+        positions = positionGeneration(cfg)
 
         diag.set_context(trial=t + 1, cycle=cycle_index, type=condition)        
 

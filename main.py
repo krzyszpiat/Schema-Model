@@ -7,9 +7,7 @@ from tqdm import tqdm
 
 # Import functions for the script
 from HebbTask import HebbParadigm
-from stimuliGeneration import categoryGeneration
-from stimuliGeneration import itemGeneration
-from stimuliGeneration import positionGeneration
+from stimuliGeneration import categoryGeneration, itemGeneration
 from diagnostics import Diagnostics
 
 
@@ -26,15 +24,6 @@ else:
     output_dir = 'outputs\\latest'
 
 os.makedirs(output_dir, exist_ok=True)
-
-
-
-##################
-# Serial positions
-##################
-
-positions = positionGeneration(cfg)
-
 
 # Prepare bins for collecting data
 
@@ -58,7 +47,7 @@ for sim in tqdm(range(n_simulations), desc="Simulations"):  # noqa: F405
 # Hebb Task
 ############
 
-    results = HebbParadigm(cfg, items, positions, output_dir, diag)
+    results = HebbParadigm(cfg, items, output_dir, diag)
 
     for r in results:
         r['simulation'] = sim + 1

@@ -5,7 +5,7 @@ import itertools
 
 from tqdm import tqdm
 
-from stimuliGeneration import categoryGeneration, itemGeneration, positionGeneration
+from stimuliGeneration import categoryGeneration, itemGeneration
 from diagnostics import Diagnostics
 from HebbTask import HebbParadigm
 
@@ -45,11 +45,10 @@ for comb in tqdm(param_combinations, desc="Overall progress", position=0):
     for sim in tqdm(range(sims), desc=f"{comb_dict}", position=1, leave=False):
         np.random.seed(sim)
 
-        positions  = positionGeneration(cfg)
         categories = categoryGeneration(cfg)
         items      = itemGeneration(cfg, categories)
 
-        results = HebbParadigm(cfg, items, positions, 'outputs/testing/firstCycle', diag)
+        results = HebbParadigm(cfg, items, 'outputs/testing/firstCycle', diag)
         
         for r in results:
             r.update(comb_dict)
