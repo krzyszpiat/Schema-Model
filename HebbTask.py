@@ -39,6 +39,9 @@ def HebbParadigm(cfg, items, output_dir, diag):
 
     results = []
 
+    # generate unique positions for the hebb lists
+    hebb_positions = positionGeneration(cfg)
+
     for t in range(n_trials):
         
         # starting a new cycle after each Hebb list
@@ -60,19 +63,21 @@ def HebbParadigm(cfg, items, output_dir, diag):
             cat_seq = selection
             condition = "Hebb List"
 
-        # creating positions' representations for the current trial
-        positions = positionGeneration(cfg)
+
 
         diag.set_context(trial=t + 1, cycle=cycle_index, type=condition)        
-
 
         #################
         # LEARNING PHASE
         ################# 
 
         encoded_associations = []
-        #associations_strengths = []
         targets = []
+
+        if trial_type == "F":
+            positions = positionGeneration(cfg)
+        elif trial_type == "H":
+            positions = hebb_positions
 
 
         for i in range(n_targets):

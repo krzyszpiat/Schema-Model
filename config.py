@@ -22,7 +22,7 @@ measure = "dot"
 #########################
 #        CONFIG
 #########################
-n_simulations = 100
+n_simulations = 1000
 
 
 features = 100
