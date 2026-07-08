@@ -1,26 +1,11 @@
 NOTATKI
+=======
 
 
-USTAWIĆ ASYMPTOTE DECAY NA 10% (?) ORGINALEJ SIŁY KODOWANIA 
+CZY GDYBY WYDOBYWANY BYŁ TYLKO OSTATNI KONTEKST TO HEBB EFFECT BY SIĘ ZMNIEJSZYŁ?
 
-- W tym momencie zeruję weight matrix na początku bloku. 
-    - Można też resetować na początku każdego trialu, wtedy każda lista ma swoje własne pozycje seryjne
-        - Można wtedy rozważyć mechanizm wydobywania macierzy przy udziale awareness
-
-
-
-
-Kiedy decay jest zbyt duży to późniejsze pozycje pokonują pozycje wcześniejsze podczas redintegracji na potrzeby wyboru kandydatów do odświeżania na danej pozycji
 
 
 Implementacja konkurencji podczas redintegracji przy odświeżaniu:
 - jeżeli item zostanie zredintegrowany raz, zostaje wykluczony z listy kandydatów podczas kolejnej redintegracji
 - można ten proces usubtelnić mocno obniżając jego siłę zamiast całkowicie ją zerować
-
-Pierwsza symulacja:
-- Threshold poniżej 25 nie ma sensu (przy 50 najlepsze efekty)
-- Zbyt wysoki decay_slope = wypada wszystko poza recent
-
-
-POTENCJALNE PROBLEMY Z REDINTEGROWANIEM ITEMÓW PODCZAS WYBIERANIA REFRESHING CANDIDATES
-- zbyt wysoki refreshing_threshold? (spróbować ustawić na połowę threshold)?

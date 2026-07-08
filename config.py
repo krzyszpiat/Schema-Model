@@ -60,5 +60,4 @@ refresh_rate = .5
 
 decay_asymptote = .05
 
-hebbRetrievalProb = 0.5
-hebbRetrievalReinforce = 0.2
+hebbRetrievalProb = 0.3 # 0 = all Hebb lists with different contexts; 1= all Hebb lists with the same context

@@ -140,10 +140,10 @@ parameters = ['phi',
               'refresh_threshold',
               'decay_rate',
               'decay_slope',
-              'n_refreshing_cycles',
               'refresh_rate',
-              'decay_on',
-              'refresh_on']
+              'decay_asymptote',
+              'hebbRetrievalProb'
+              ]
 
 for par in parameters:
     p.write(f'{par} = {cfg[par]}\n')

@@ -22,7 +22,6 @@ def HebbParadigm(cfg, items, output_dir, diag):
     refresh_on = cfg['refresh_on']
     decay_asymptote = cfg['decay_asymptote']
     hebbRetrievalProb = cfg['hebbRetrievalProb']
-    hebbRetrievalReinforce = cfg['hebbRetrievalReinforce']
 
 
 
@@ -42,11 +41,7 @@ def HebbParadigm(cfg, items, output_dir, diag):
     m = np.zeros((features, features))
 
     results = []
-
-    # generate unique positions for the hebb lists
-    hebb_positions = positionGeneration(cfg)
-
-
+    memory_pool = []
 
 
     for t in range(n_trials):
@@ -83,14 +78,14 @@ def HebbParadigm(cfg, items, output_dir, diag):
 
         if trial_type == "F":
             positions = positionGeneration(cfg)
-        elif trial_type == "H" and cycle_index == 0:
-            positions = hebb_positions
         elif trial_type == "H":
-            if np.random.rand() < hebbRetrievalProb:
-                positions = hebb_positions
-                hebbRetrievalProb = min(1.0, hebbRetrievalProb + hebbRetrievalReinforce)
+            N = len(memory_pool)
+            p_any = 1 - (1 - hebbRetrievalProb) ** N
+            if N > 0 and np.random.rand() < p_any:
+                positions = memory_pool[np.random.randint(N)]
             else:
                 positions = positionGeneration(cfg)
+            memory_pool.append(positions)
             
 
         for i in range(n_targets):
