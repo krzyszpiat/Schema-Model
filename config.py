@@ -8,7 +8,7 @@ snapshot_on = 0
 diag_level = 0
 
 # Save in new folder (0 = overwrite old data)
-save_unique = 0
+save_unique = 1
 
 # Open plots? (1 = yes, 2 = only Hebb effect)
 show_plots = 1
@@ -22,7 +22,7 @@ measure = "dot"
 #########################
 #        CONFIG
 #########################
-n_simulations = 1000
+n_simulations = 100
 
 
 features = 100
@@ -59,3 +59,6 @@ decay_slope = .4
 refresh_rate = .5
 
 decay_asymptote = .05
+
+hebbRetrievalProb = 0.5
+hebbRetrievalReinforce = 0.2
